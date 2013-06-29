@@ -1,164 +1,70 @@
-# tty.js
+# tty.js + HTML Injection
 
-A terminal in your browser using node.js and socket.io. Based on Fabrice
-Bellard's vt100 for [jslinux](http://bellard.org/jslinux/).
+Originally forked from the amazing [tty.js](https://github.com/chjj/tty.js/).
 
-## Screenshots
+The goal is to extend this project to support the creation of rich media windows,
+on top of the terminal windows.
 
-### irssi
+The idea is simple: the server watches a directory, and monitors the creation &
+modification of HTML files; upong modification / creation, it creates a new window
+on the client side (browser), which simply render the HTML. 
 
-![](http://i.imgur.com/wqare.png)
+Clients are easy to develop: one simply needs to dump HTML into the watched
+directory to have it rendered by the browser.
 
-### vim & alsamixer
+For now, I'm focusing on one client, written in Lua, for 
+[Torch7](https://github.com/andresy/torch).
 
-![](http://i.imgur.com/Zg1Jq.png)
+Check out [tty.js](https://github.com/chjj/tty.js/) for reference on the
+original project. Note: I'm simply extending their project, not modifying
+any of the core structure, so it should remain compatible.
 
-### bash
+## Installation
 
-![](http://i.imgur.com/HimZb.png)
+Just run:
 
-## Features
-
-- Tabs, Stacking Windows, Maximizable Terminals
-- Screen/Tmux-like keys (optional)
-- Ability to efficiently render programs: vim, mc, irssi, vifm, etc.
-- Support for xterm mouse events
-- 256 color support
-- Persistent sessions
-
-## Install
-
-``` bash
-$ npm install tty.js
+```
+./install.sh
 ```
 
-## Usage
+It assumes that you already have Node.js, NPM, and Torch7 installed (the later
+is the only supported client for now).
 
-tty.js is an app, but it's also possible to hook into it programatically.
+## Execution
 
-``` js
-var tty = require('tty.js');
+Once installed, you can run the server like this:
 
-var app = tty.createServer({
-  shell: 'bash',
-  users: {
-    foo: 'bar'
-  },
-  port: 8000
-});
-
-app.get('/foo', function(req, res, next) {
-  res.send('bar');
-});
-
-app.listen();
+```
+node ~/.tty.js/server.js
 ```
 
-## Configuration
+And then open up a tab in your browser, at [http://localhost:8000](http://localhost:8000).
 
-Configuration is stored in `~/.tty.js/config.json` or `~/.tty.js` as a single
-JSON file. An example configuration file looks like:
+Start up a terminal, and then run Torch:
 
-``` json
-{
-  "users": {
-    "hello": "world"
-  },
-  "https": {
-    "key": "./server.key",
-    "cert": "./server.crt"
-  },
-  "port": 8080,
-  "hostname": "127.0.0.1",
-  "shell": "sh",
-  "shellArgs": ["arg1", "arg2"],
-  "static": "./static",
-  "limitGlobal": 10000,
-  "limitPerUser": 1000,
-  "localOnly": false,
-  "cwd": ".",
-  "syncSession": false,
-  "sessionTimeout": 600000,
-  "log": true,
-  "io": { "log": false },
-  "debug": false,
-  "term": {
-    "termName": "xterm",
-    "geometry": [80, 24],
-    "scrollback": 1000,
-    "visualBell": false,
-    "popOnBell": false,
-    "cursorBlink": false,
-    "screenKeys": false,
-    "colors": [
-      "#2e3436",
-      "#cc0000",
-      "#4e9a06",
-      "#c4a000",
-      "#3465a4",
-      "#75507b",
-      "#06989a",
-      "#d3d7cf",
-      "#555753",
-      "#ef2929",
-      "#8ae234",
-      "#fce94f",
-      "#729fcf",
-      "#ad7fa8",
-      "#34e2e2",
-      "#eeeeec"
-    ]
-  }
-}
+```
+torch
 ```
 
-Usernames and passwords can be plaintext or sha1 hashes.
+At the prompt, you can load the tty.js client, and render things:
 
-### 256 colors
+```lua
+t = require 'ttyjs'
+require 'image'
+t.image(image.lena())
+t.images({
+   image.lena()
+   image.lena()
+   image.lena()
+   image.lena()
+   image.lena()
+   image.lena()
+   image.lena()
+   image.lena()
+}, 0.5)
+```
 
-If tty.js fails to check your terminfo properly, you can force your `TERM`
-to `xterm-256color` by setting `"termName": "xterm-256color"` in your config.
+This will produce this output:
 
-## Security
+-![]()
 
-tty.js currently has https as an option. It also has express' default basic
-auth middleware as an option, until it possibly gets something more robust.
-It's ultimately up to you to make sure no one has access to your terminals
-but you.
-
-## CLI
-
-- `tty.js --port 3000` - start and bind to port 3000.
-- `tty.js --daemonize` - daemonize process.
-- `tty.js --config ~/my-config.json` - specify config file.
-
-## TERM
-
-The main goal of tty.js is to eventually write a full xterm emulator.
-This goal has almost been reached, but there are a few control sequences
-not implemented fully. `TERM` should render everything fine when set to
-`xterm`.
-
-## Portability
-
-tty.js should ultimately be able to work on any unix that implements unix98
-tty's and `forkpty(3)`. tty.js builds on linux and osx, and it *should* build
-on NetBSD, FreeBSD, and OpenBSD as well. If you have trouble building, please
-post an issue.
-
-## Todo
-
-The distance to go before full xterm compatibility.
-
-- VT52 codes for compatibility
-- All vt400 rectangle sequences
-- Remaining DEC private modes
-- Miscellaneous sequences: cursor shape, window title
-- Origin Mode, Insert Mode
-- Proper Tab Setting
-
-## License
-
-Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
-
-[1]: http://invisible-island.net/xterm/ctlseqs/ctlseqs.html#Mouse%20Tracking
