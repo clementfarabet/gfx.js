@@ -12,6 +12,9 @@ DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/ttyjs/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR
 cp clients/torch/* $DIR
+if [ $? -ne 0 ]; then
+    sudo cp clients/torch/* $DIR
+fi
 
 echo "==> run me like this:"
 echo "$ node ~/.tty.js/server.js"
