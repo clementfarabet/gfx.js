@@ -66,5 +66,5 @@ t.images({
 
 This will produce this output:
 
--![]()
+-![](https://raw.github.com/clementfarabet/tty.js/master/img/torchclient.jpg)
 
