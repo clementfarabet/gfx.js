@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+echo "==> installing deps"
+unset CC CXX
+npm install
+
 echo "==> installing static resources into ~/.tty.js/"
 mkdir -p ~/.tty.js/
 cp -r * ~/.tty.js/
