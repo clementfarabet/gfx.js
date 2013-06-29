@@ -10,24 +10,22 @@ text.format_operator()
 local ttyjs = {}
 
 ttyjs.static = os.getenv('HOME') .. '/.tty.js/static/data/'
+ttyjs.template = os.getenv('HOME') .. '/.tty.js/templates/'
 
 os.execute('rm -rf "' .. ttyjs.static .. '"')
 os.execute('mkdir -p "' .. ttyjs.static .. '"')
 
-ttyjs.templates = {
-   image = [[
-      <a href="/data/${filename}" target="_blank"" style="text-decoration:none;">
-         <img src="/data/${filename}" width=${width}/>
-      </a>
-   ]],
-   window = [[
-      <div style="width:${width}px; height:${height}px; overflow-y:scroll; background:#444;">
-         ${content}
-      </div>
-   ]],
-}
+ttyjs.templates = {}
 
 local t = ttyjs.templates
+
+for file in paths.files(ttyjs.template) do
+   if file:find('html$') then
+      local f = io.open(paths.concat(ttyjs.template,file))
+      local template = f:read('*all')
+      t[file:gsub('%.html$','')] = template
+   end
+end
 
 local function uid()
    return (os.time() .. math.random()):gsub('%.','')
