@@ -90,6 +90,7 @@ tty.open = function() {
       tty.toggleLights();
     });
   }
+  tty.toggleLights();
 
   tty.socket.on('connect', function() {
     tty.reset();
@@ -97,6 +98,20 @@ tty.open = function() {
   });
 
   tty.socket.on('data', function(id, data) {
+    if (id == -1) {
+      var x = new XMLHttpRequest();
+      x.onreadystatechange = function() {
+        if (x.readyState==4 && x.status==200) {
+          // create new pane for resource:
+          var pane = new Pane;
+          var el = document.createElement('span');
+          el.innerHTML = x.responseText;
+          pane.element.appendChild(el);
+        }
+      };
+      x.open('GET', data, true);
+      x.send();
+    }
     if (!tty.terms[id]) return;
     tty.terms[id].write(data);
   });
@@ -189,6 +204,299 @@ tty.toggleLights = function() {
   root.className = !root.className
     ? 'dark'
     : '';
+};
+
+/**
+ * Pane
+ */
+
+function Pane() {
+  var self = this;
+
+  EventEmitter.call(this);
+
+  var el
+    , grip
+    , bar
+    , button
+    , title;
+
+  el = document.createElement('div');
+  el.className = 'window';
+
+  grip = document.createElement('div');
+  grip.className = 'grip';
+
+  bar = document.createElement('div');
+  bar.className = 'bar';
+
+  button = document.createElement('div');
+  button.innerHTML = '~';
+  button.title = 'new/close';
+  button.className = 'tab';
+
+  title = document.createElement('div');
+  title.className = 'title';
+  title.innerHTML = '';
+
+  this.element = el;
+  this.grip = grip;
+  this.bar = bar;
+  this.button = button;
+  this.title = title;
+
+  this.tabs = [];
+  this.focused = null;
+
+  this.cols = Terminal.geometry[0];
+  this.rows = Terminal.geometry[1];
+
+  el.appendChild(grip);
+  el.appendChild(bar);
+  bar.appendChild(button);
+  bar.appendChild(title);
+  body.appendChild(el);
+
+  tty.windows.push(this);
+
+  this.focus();
+  this.bind();
+}
+
+inherits(Pane, EventEmitter);
+
+Pane.prototype.bind = function() {
+  var self = this
+    , el = this.element
+    , bar = this.bar
+    , grip = this.grip
+    , button = this.button
+    , last = 0;
+
+  on(button, 'click', function(ev) {
+    if (ev.ctrlKey || ev.altKey || ev.metaKey || ev.shiftKey) {
+      self.destroy();
+    } else {
+      self.createTab();
+    }
+    return cancel(ev);
+  });
+
+  on(grip, 'mousedown', function(ev) {
+    self.focus();
+    self.resizing(ev);
+    return cancel(ev);
+  });
+
+  on(el, 'mousedown', function(ev) {
+    if (ev.target !== el && ev.target !== bar) return;
+
+    self.focus();
+
+    cancel(ev);
+
+    if (new Date - last < 600) {
+      return self.maximize();
+    }
+    last = new Date;
+
+    self.drag(ev);
+
+    return cancel(ev);
+  });
+};
+
+Pane.prototype.focus = function() {
+  // Restack
+  var parent = this.element.parentNode;
+  if (parent) {
+    parent.removeChild(this.element);
+    parent.appendChild(this.element);
+  }
+
+  tty.emit('focus window', this);
+  this.emit('focus');
+};
+
+Pane.prototype.destroy = function() {
+  if (this.destroyed) return;
+  this.destroyed = true;
+
+  if (this.minimize) this.minimize();
+
+  splice(tty.windows, this);
+  if (tty.windows.length) tty.windows[0].focus();
+
+  this.element.parentNode.removeChild(this.element);
+
+  this.each(function(term) {
+    term.destroy();
+  });
+
+  tty.emit('close window', this);
+  this.emit('close');
+};
+
+Pane.prototype.drag = function(ev) {
+  var self = this
+    , el = this.element;
+
+  if (this.minimize) return;
+
+  var drag = {
+    left: el.offsetLeft,
+    top: el.offsetTop,
+    pageX: ev.pageX,
+    pageY: ev.pageY
+  };
+
+  el.style.opacity = '0.60';
+  el.style.cursor = 'move';
+  root.style.cursor = 'move';
+
+  function move(ev) {
+    el.style.left =
+      (drag.left + ev.pageX - drag.pageX) + 'px';
+    el.style.top =
+      (drag.top + ev.pageY - drag.pageY) + 'px';
+  }
+
+  function up() {
+    el.style.opacity = '';
+    el.style.cursor = '';
+    root.style.cursor = '';
+
+    off(document, 'mousemove', move);
+    off(document, 'mouseup', up);
+
+    var ev = {
+      left: el.style.left.replace(/\w+/g, ''),
+      top: el.style.top.replace(/\w+/g, '')
+    };
+
+    tty.emit('drag window', self, ev);
+    self.emit('drag', ev);
+  }
+
+  on(document, 'mousemove', move);
+  on(document, 'mouseup', up);
+};
+
+Pane.prototype.resizing = function(ev) {
+  var self = this
+    , el = this.element
+    , term = this.focused;
+
+  if (this.minimize) delete this.minimize;
+
+  var resize = {
+    w: el.clientWidth,
+    h: el.clientHeight
+  };
+
+  el.style.overflow = 'hidden';
+  el.style.opacity = '0.70';
+  el.style.cursor = 'se-resize';
+  root.style.cursor = 'se-resize';
+  // term.element.style.height = '100%';
+
+  function move(ev) {
+    var x, y;
+    y = el.offsetHeight; // - term.element.clientHeight;
+    x = ev.pageX - el.offsetLeft;
+    y = (ev.pageY - el.offsetTop) - y;
+    el.style.width = x + 'px';
+    el.style.height = y + 'px';
+  }
+
+  function up() {
+    var x, y;
+
+    x = el.clientWidth / resize.w;
+    y = el.clientHeight / resize.h;
+    x = 0; //(x * term.cols) | 0;
+    y = 0; //(y * term.rows) | 0;
+
+    self.resize(x, y);
+
+    el.style.width = '';
+    el.style.height = '';
+
+    el.style.overflow = '';
+    el.style.opacity = '';
+    el.style.cursor = '';
+    root.style.cursor = '';
+    // term.element.style.height = '';
+
+    off(document, 'mousemove', move);
+    off(document, 'mouseup', up);
+  }
+
+  on(document, 'mousemove', move);
+  on(document, 'mouseup', up);
+};
+
+Pane.prototype.maximize = function() {
+  if (this.minimize) return this.minimize();
+
+  var self = this
+    , el = this.element
+    , term = this.focused
+    , x
+    , y;
+
+  var m = {
+    cols: term.cols,
+    rows: term.rows,
+    left: el.offsetLeft,
+    top: el.offsetTop,
+    root: root.className
+  };
+
+  this.minimize = function() {
+    delete this.minimize;
+
+    el.style.left = m.left + 'px';
+    el.style.top = m.top + 'px';
+    el.style.width = '';
+    el.style.height = '';
+    term.element.style.width = '';
+    term.element.style.height = '';
+    el.style.boxSizing = '';
+    self.grip.style.display = '';
+    root.className = m.root;
+
+    self.resize(m.cols, m.rows);
+
+    tty.emit('minimize window', self);
+    self.emit('minimize');
+  };
+
+  window.scrollTo(0, 0);
+
+  x = root.clientWidth / term.element.offsetWidth;
+  y = root.clientHeight / term.element.offsetHeight;
+  x = (x * term.cols) | 0;
+  y = (y * term.rows) | 0;
+
+  el.style.left = '0px';
+  el.style.top = '0px';
+  el.style.width = '100%';
+  el.style.height = '100%';
+  term.element.style.width = '100%';
+  term.element.style.height = '100%';
+  el.style.boxSizing = 'border-box';
+  this.grip.style.display = 'none';
+  root.className = 'maximized';
+
+  this.resize(x, y);
+
+  tty.emit('maximize window', this);
+  this.emit('maximize');
+};
+
+Pane.prototype.resize = function(cols, rows) {
+  // this.emit('resize', cols, rows);
 };
 
 /**
