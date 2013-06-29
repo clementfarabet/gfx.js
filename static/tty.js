@@ -329,10 +329,6 @@ Pane.prototype.destroy = function() {
 
   this.element.parentNode.removeChild(this.element);
 
-  this.each(function(term) {
-    term.destroy();
-  });
-
   tty.emit('close window', this);
   this.emit('close');
 };
