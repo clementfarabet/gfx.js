@@ -15,6 +15,8 @@ directory to have it rendered by the browser.
 For now, I'm focusing on one client, written in Lua, for 
 [Torch7](https://github.com/andresy/torch).
 
+![](https://raw.github.com/clementfarabet/tty.js/master/img/torchclient.png)
+
 Check out [tty.js](https://github.com/chjj/tty.js/) for reference on the
 original project. Note: I'm simply extending their project, not modifying
 any of the core structure, so it should remain compatible.
@@ -68,3 +70,26 @@ This will produce this output:
 
 ![](https://raw.github.com/clementfarabet/tty.js/master/img/torchclient.png)
 
+I've also slowly started to integrate plots from [NVD3](http://nvd3.org/), and bind
+them to Torch, so that they can seamlessly be called from the Torch repl:
+
+```lua
+t.char(data, {
+   chart = 'line', -- or: bar, stacked, multibar, scatter
+   width = 600,
+   height = 450,
+})
+-- where data has the form:
+data = {
+    {
+        key = 'Legend 1',
+        color = '#0f0',
+        values = { {x=0,y=0}, {x=1,y=1}, ... },
+    },
+    {
+        key = 'Legend 2',
+        color = '#00f',
+        values = { {x=0,y=0}, {x=1,y=1}, ... },
+    },
+}
+```
