@@ -184,4 +184,9 @@ h1 {
   left: 10px;
 }
 
-.dark h1, .dark #help { display: none; }
+#help a {
+  /* text-decoration: none; */
+  color: #999;
+}
+
+.dark h1, .dark #help { }
