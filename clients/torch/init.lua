@@ -133,35 +133,61 @@ function ttyjs.images(images, opts)
    f:close()
 end
 
--- chart?
-local charts = {
-   line = 'lineChart',
-   bar = 'discreteBarChart',
-   stacked = 'stackedAreaChart',
-   multibar = 'multiBarChart',
-   scatter = 'scatterChart',
-}
-function ttyjs.chart(data, opts)
-   -- args:
-   opts = opts or {}
-   local width = opts.width or 600
-   local height = opts.height or 450
-   local background = opts.background or '#fff'
-   local win = opts.win or uid()
-   local chart = opts.chart or 'line'
-
-   -- chart
-   chart = charts[chart]
-   if not chart then
-      print('unknown chart, must be one of:')
-      for c in pairs(charts) do
-         io.write(c .. ', ')
+-- format datasets:
+local function format(data, chart)
+   -- format datasets:
+   if data then
+      -- one dataset only?
+      if #data == 0 then
+         data = {data}
       end
-      print('')
-   end
 
-   -- default data (for examples)
-   if not data then
+      -- format values:
+      for i,dataset in ipairs(data) do
+         -- legend:
+         dataset.key = dataset.key or ('Data #'..i)
+
+         -- values:
+         local values = dataset.values
+         if type(values) == 'table' then
+            -- remap values:
+            if not values[1].x or not values[1].y then
+               for i,value in ipairs(values) do
+                  value.x = value[1]
+                  value.y = value[2]
+                  value.size = value[3]
+               end
+            end
+
+         elseif torch.typename(values) then
+            -- remap values:
+            if values:nDimension() == 2 and values:size(2) == 2 then
+               local vals = {}
+               for i = 1,values:size(1) do
+                  vals[i] = {
+                     x = values[i][1],
+                     y = values[i][2]
+                  }
+               end
+               dataset.values = vals
+            elseif values:nDimension() == 2 and values:size(2) == 3 then
+               local vals = {}
+               for i = 1,values:size(1) do
+                  vals[i] = {
+                     x = values[i][1],
+                     y = values[i][2],
+                     size = values[i][3]
+                  }
+               end
+               dataset.values = vals
+            end
+         else
+            error('dataset.values must be a tensor or a table')
+         end
+      end
+
+   else
+      -- Example dataset:
       local values1,values2,rand = {},{}
       if chart == 'scatterChart' then
          N = 200
@@ -195,6 +221,40 @@ function ttyjs.chart(data, opts)
          }
       }
    end
+
+   -- return formatted data:
+   return data
+end
+
+-- chart?
+local charts = {
+   line = 'lineChart',
+   bar = 'discreteBarChart',
+   stacked = 'stackedAreaChart',
+   multibar = 'multiBarChart',
+   scatter = 'scatterChart',
+}
+function ttyjs.chart(data, opts)
+   -- args:
+   opts = opts or {}
+   local width = opts.width or 600
+   local height = opts.height or 450
+   local background = opts.background or '#fff'
+   local win = opts.win or uid()
+   local chart = opts.chart or 'line'
+
+   -- chart
+   chart = charts[chart]
+   if not chart then
+      print('unknown chart, must be one of:')
+      for c in pairs(charts) do
+         io.write(c .. ', ')
+      end
+      print('')
+   end
+
+   -- format data
+   data = format(data,chart)
 
    -- export data:
    local data_json = json.encode(data)
