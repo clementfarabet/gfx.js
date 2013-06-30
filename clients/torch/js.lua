@@ -8,22 +8,22 @@ local json = require 'cjson'
 local Template = require('pl.text').Template
 text.format_operator()
 
-local ttyjs = {}
+local js = {}
 
-ttyjs.static = os.getenv('HOME') .. '/.tty.js/static/data/'
-ttyjs.template = os.getenv('HOME') .. '/.tty.js/templates/'
-ttyjs.prefix = '/data/'
+js.static = os.getenv('HOME') .. '/.tty.js/static/data/'
+js.template = os.getenv('HOME') .. '/.tty.js/templates/'
+js.prefix = '/data/'
 
-os.execute('rm -rf "' .. ttyjs.static .. '"')
-os.execute('mkdir -p "' .. ttyjs.static .. '"')
+os.execute('rm -rf "' .. js.static .. '"')
+os.execute('mkdir -p "' .. js.static .. '"')
 
-ttyjs.templates = {}
+js.templates = {}
 
-local t = ttyjs.templates
+local t = js.templates
 
-for file in paths.files(ttyjs.template) do
+for file in paths.files(js.template) do
    if file:find('html$') then
-      local f = io.open(paths.concat(ttyjs.template,file))
+      local f = io.open(paths.concat(js.template,file))
       local template = f:read('*all')
       t[file:gsub('%.html$','')] = template
    end
@@ -33,14 +33,14 @@ local function uid()
    return 'dom_' .. (os.time() .. math.random()):gsub('%.','')
 end
 
-function ttyjs.image(img, opts)
+function js.image(img, opts)
    -- options:
    opts = opts or {}
    local zoom = opts.zoom or 1
 
    -- img is a table?
    if type(img) == 'table' then
-      ttyjs.images(img, opts)
+      js.images(img, opts)
       return
    end
 
@@ -53,14 +53,14 @@ function ttyjs.image(img, opts)
       for i = 1,img:size(1) do
          images[i] = img[i]
       end
-      ttyjs.images(images, opts)
+      js.images(images, opts)
       return
    end
 
    -- dump image:
    local uid = uid()
    local filename = uid .. '.jpg'
-   image.save(ttyjs.static..filename, img)
+   image.save(js.static..filename, img)
 
    -- zoom
    local zoom = zoom or 1
@@ -74,13 +74,13 @@ function ttyjs.image(img, opts)
    end
 
    -- render template:
-   local html = t.image % {width=width, filename=ttyjs.prefix..filename}
-   local f = io.open(ttyjs.static..uid..'.html','w')
+   local html = t.image % {width=width, filename=js.prefix..filename}
+   local f = io.open(js.static..uid..'.html','w')
    f:write(html)
    f:close()
 end
 
-function ttyjs.images(images, opts)
+function js.images(images, opts)
    -- options:
    opts = opts or {}
    local nperrow = opts.nperrow or math.floor(math.sqrt(#images))
@@ -98,7 +98,7 @@ function ttyjs.images(images, opts)
       -- dump image:
       local uid = uid()
       local filename = uid .. '.jpg'
-      image.save(ttyjs.static..filename, img)
+      image.save(js.static..filename, img)
 
       -- zoom
       local zoom = zoom or 1
@@ -116,7 +116,7 @@ function ttyjs.images(images, opts)
       maxheight = math.max(maxheight, width)
 
       -- render template:
-      local html = t.image % {width=width, filename=ttyjs.prefix..filename}
+      local html = t.image % {width=width, filename=js.prefix..filename}
       table.insert(templates, html)
    end
 
@@ -128,7 +128,7 @@ function ttyjs.images(images, opts)
       height = height, 
       content = table.concat(templates, '\n')
    }
-   local f = io.open(ttyjs.static..uid()..'.html','w')
+   local f = io.open(js.static..uid()..'.html','w')
    f:write(html)
    f:close()
 end
@@ -234,7 +234,7 @@ local charts = {
    multibar = 'multiBarChart',
    scatter = 'scatterChart',
 }
-function ttyjs.chart(data, opts)
+function js.chart(data, opts)
    -- args:
    opts = opts or {}
    local width = opts.width or 600
@@ -268,7 +268,7 @@ function ttyjs.chart(data, opts)
       background = background,
       chart = chart,
    }
-   local f = io.open(ttyjs.static..win..'.html','w')
+   local f = io.open(js.static..win..'.html','w')
    f:write(html)
    f:close()
 
@@ -276,5 +276,5 @@ function ttyjs.chart(data, opts)
    return win
 end
 
-return ttyjs
+return js
 

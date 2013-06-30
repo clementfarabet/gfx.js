@@ -8,7 +8,7 @@ echo "==> installing static resources into ~/.tty.js/"
 mkdir -p ~/.tty.js/
 cp -r * ~/.tty.js/
 
-DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/ttyjs/
+DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/tty/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR
 if [ $? -ne 0 ]; then

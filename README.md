@@ -51,10 +51,9 @@ torch
 At the prompt, you can load the tty.js client, and render things:
 
 ```lua
-t = require 'ttyjs'
-require 'image'
-t.image(image.lena())
-t.images({
+js = require 'tty.js'
+js.image(image.lena())
+js.image({
    image.lena()
    image.lena()
    image.lena()
@@ -63,7 +62,7 @@ t.images({
    image.lena()
    image.lena()
    image.lena()
-}, 0.5)
+}, {zoom=0.5})
 ```
 
 This will produce this output:
@@ -74,11 +73,12 @@ I've also slowly started to integrate plots from [NVD3](http://nvd3.org/), and b
 them to Torch, so that they can seamlessly be called from the Torch repl:
 
 ```lua
-t.char(data, {
+js.chart(data, {
    chart = 'line', -- or: bar, stacked, multibar, scatter
    width = 600,
    height = 450,
 })
+
 -- where data has the form:
 data = {
     {
@@ -92,4 +92,16 @@ data = {
         values = { {x=0,y=0}, {x=1,y=1}, ... },
     },
 }
+
+-- or, for a single dataset:
+data = {
+    key = 'Legend',
+    values = { {x=0,y=0} , ... }
+}
+
+-- values can be provided in convenient ways:
+values = { {x=0,y=0[,size=0]}, ... }
+values = { {0,0,0}, ... }
+values = torch.randn(100,2)
+values = torch.randn(100,3)  -- the 3rd dimension is the optional size, only used by certain charts
 ```
