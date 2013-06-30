@@ -15,7 +15,7 @@ directory to have it rendered by the browser.
 For now, I'm focusing on one client, written in Lua, for 
 [Torch7](https://github.com/andresy/torch).
 
-![](https://raw.github.com/clementfarabet/tty.js/master/img/torchclient.png)
+![](https://raw.github.com/clementfarabet/tty.js/master/img/torchclient2.png)
 
 Check out [tty.js](https://github.com/chjj/tty.js/) for reference on the
 original project. Note: I'm simply extending their project, not modifying
