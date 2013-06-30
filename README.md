@@ -104,4 +104,8 @@ values = { {x=0,y=0[,size=0]}, ... }
 values = { {0,0,0}, ... }
 values = torch.randn(100,2)
 values = torch.randn(100,3)  -- the 3rd dimension is the optional size, only used by certain charts
+values = torch.randn(100) -- in this case, y is provided, x defaults to range(0,N-1)
+
+-- a shortcut is also provided for quick plots:
+js.chart(torch.randn(100,2), {chart='scatter'})
 ```

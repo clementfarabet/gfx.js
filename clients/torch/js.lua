@@ -137,6 +137,13 @@ end
 local function format(data, chart)
    -- format datasets:
    if data then
+      -- data is a straight tensor?
+      if torch.typename(data) then
+         data = {
+            values = data
+         }
+      end
+      
       -- one dataset only?
       if #data == 0 then
          data = {data}
@@ -161,7 +168,17 @@ local function format(data, chart)
 
          elseif torch.typename(values) then
             -- remap values:
-            if values:nDimension() == 2 and values:size(2) == 2 then
+            if values:nDimension() == 1 then
+               local vals = {}
+               for i = 1,values:size(1) do
+                  vals[i] = {
+                     x = i-1,
+                     y = values[i],
+                  }
+               end
+               dataset.values = vals
+
+            elseif values:nDimension() == 2 and values:size(2) == 2 then
                local vals = {}
                for i = 1,values:size(1) do
                   vals[i] = {
@@ -170,6 +187,7 @@ local function format(data, chart)
                   }
                end
                dataset.values = vals
+
             elseif values:nDimension() == 2 and values:size(2) == 3 then
                local vals = {}
                for i = 1,values:size(1) do
@@ -180,6 +198,9 @@ local function format(data, chart)
                   }
                end
                dataset.values = vals
+
+            else
+               error('dataset.values could not be parsed')
             end
          else
             error('dataset.values must be a tensor or a table')
