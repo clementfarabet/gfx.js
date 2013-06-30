@@ -38,6 +38,19 @@ function ttyjs.image(img, opts)
    opts = opts or {}
    local zoom = opts.zoom or 1
 
+   -- rescale image:
+   img = img:clone():add(-img:min()):mul(1/img:max())
+
+   -- img is a collection?
+   if img:nDimension() == 4 or (img:nDimension() == 3 and img:size(1) > 3) then
+      local images = {}
+      for i = 1,img:size(1) do
+         images[i] = img[i]
+      end
+      ttyjs.images(images, opts)
+      return
+   end
+
    -- dump image:
    local uid = uid()
    local filename = uid .. '.jpg'
@@ -64,7 +77,7 @@ end
 function ttyjs.images(images, opts)
    -- options:
    opts = opts or {}
-   local nperrow = opts.nperrow or 4
+   local nperrow = opts.nperrow or math.floor(math.sqrt(#images))
    local zoom = opts.zoom or 1
    local width = opts.width or 1200
    local height = opts.height or 800
@@ -73,6 +86,9 @@ function ttyjs.images(images, opts)
    local templates = {}
    local maxwidth,maxheight = 0,0
    for _,img in ipairs(images) do
+      -- rescale image:
+      img = img:clone():add(-img:min()):mul(1/img:max())
+
       -- dump image:
       local uid = uid()
       local filename = uid .. '.jpg'
