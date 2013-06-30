@@ -1,0 +1,30 @@
+<div id="${id}">
+    <svg style="height:${height}px; width:${width}px; background:${background};"></svg>
+</div>
+
+<script>
+nv.addGraph(function() {
+    var chart = nv.models.${chart}();
+
+    if ("${chart}" == "scatterChart") {
+        chart
+            .showDistX(true)
+            .showDistY(true);
+    }
+
+    chart
+        .color(d3.scale.category10().range());
+
+    chart.xAxis.tickFormat(d3.format('.02f'))
+    chart.yAxis.tickFormat(d3.format('.02f'))
+
+    d3.select('#${id} svg')
+        .datum(${data})
+        .transition().duration(500)
+        .call(chart);
+
+    nv.utils.windowResize(chart.update);
+
+    return chart;
+});
+</script>

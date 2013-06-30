@@ -107,6 +107,12 @@ tty.open = function() {
           var el = document.createElement('span');
           el.innerHTML = x.responseText;
           pane.element.appendChild(el);
+
+          // force script eval:
+          var scripts = el.getElementsByTagName('script');
+          for (var ix = 0; ix < scripts.length; ix++) {
+              eval(scripts[ix].text);
+          }
         }
       };
       x.open('GET', data, true);
