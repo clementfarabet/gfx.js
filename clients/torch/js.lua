@@ -14,7 +14,6 @@ js.static = os.getenv('HOME') .. '/.tty.js/static/data/'
 js.template = os.getenv('HOME') .. '/.tty.js/templates/'
 js.prefix = '/data/'
 
-os.execute('rm -rf "' .. js.static .. '"')
 os.execute('mkdir -p "' .. js.static .. '"')
 
 js.templates = {}
