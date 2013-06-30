@@ -166,7 +166,7 @@ tty.open = function() {
       if (!tty.windows[i].focused) continue;
       tty.windows[i].focused.pollProcessName();
     }
-  }, 2 * 1000);
+  }, 1000);
 
   // Keep windows maximized.
   on(window, 'resize', function() {
