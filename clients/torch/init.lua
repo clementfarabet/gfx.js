@@ -38,6 +38,12 @@ function ttyjs.image(img, opts)
    opts = opts or {}
    local zoom = opts.zoom or 1
 
+   -- img is a table?
+   if type(img) == 'table' then
+      ttyjs.images(img, opts)
+      return
+   end
+
    -- rescale image:
    img = img:clone():add(-img:min()):mul(1/img:max())
 
