@@ -1,5 +1,8 @@
 <div id="${id}">
     <svg style="height:${height}px; width:${width}px; background:${background};"></svg>
+    <div style="background:${background}">
+        <span style="${button}">SVG</span>
+    </div>
 </div>
 
 <script>
@@ -27,4 +30,30 @@ nv.addGraph(function() {
 
     return chart;
 });
+
+var buttons = document.getElementById('${id}').children[1].children;
+buttons[0].onclick = function() {
+    var svg = document.getElementById('${id}').children[0];
+    var svg = (new XMLSerializer).serializeToString(svg);
+    window.URL = window.webkitURL || window.URL;
+
+    var bb = new Blob([svg], {type:'text/svg'});
+
+    var a = document.createElement('a');
+    a.download = 'chart.svg';
+    a.href = window.URL.createObjectURL(bb);
+    a.textContent = 'Save!';
+    a.dataset.downloadurl = ['text/svg', a.download, a.href].join(':');
+
+    document.getElementById('${id}').children[1].appendChild(a);
+
+    a.onclick = function(e) {
+        setTimeout(function() {
+            window.URL.revokeObjectURL(a.href);
+        }, 1500);
+        a.remove();
+    };
+
+    a.click();
+}; 
 </script>

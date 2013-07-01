@@ -279,14 +279,27 @@ function js.chart(data, opts)
    -- export data:
    local data_json = json.encode(data)
 
+   -- button style:
+   local button = table.concat({
+      'background:rgba(0,0,0,0.7);',
+      'color:#ccc;',
+      'margin-left:2px;',
+      'margin-right:2px;', 
+      'padding:3px;', 
+      'font-family:helvetica;',
+      'font-size:10px;',
+      'cursor:pointer;'
+   },'')
+
    -- generate html:
    local html = t.chart % {
       width = width,
       height = height,
       data = data_json,
       id = win,
-      background = background,
       chart = chart,
+      background = background,
+      button = button,
    }
    local f = io.open(js.static..win..'.html','w')
    f:write(html)
