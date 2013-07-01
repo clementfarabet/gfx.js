@@ -23,14 +23,14 @@ any of the core structure, so it should remain compatible.
 
 ## Installation
 
-Just run:
+You have to have Node.js (important, Version >= 0.10.0), NPM, and Torch7
+installed. With older versions of Node.js, things won't be stable.
+
+Then simply run:
 
 ```
 ./install.sh
 ```
-
-It assumes that you already have Node.js, NPM, and Torch7 installed (the later
-is the only supported client for now).
 
 ## Execution
 
