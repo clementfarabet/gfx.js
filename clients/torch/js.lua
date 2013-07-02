@@ -8,7 +8,7 @@ local json = require 'cjson'
 local Template = require('pl.text').Template
 text.format_operator()
 
-local js = {}
+js = {}
 
 js.static = os.getenv('HOME') .. '/.tty.js/static/data/'
 js.template = os.getenv('HOME') .. '/.tty.js/templates/'
@@ -346,13 +346,15 @@ end
 -- initialize context / server
 local status = io.popen('curl -s http://localhost:8000'):read('*all'):gsub('%s*','')
 if status == '' then
-   print('[tty.js] WARNING: server not running, graphics will be saved but not displayed')
-   print('[tty.js] to enable live display, start a tty.js server:')
-   print('[tty.js] $ node ~/.tty.js/server.js')
-   print('[tty.js] then navigate to http://localhost:8000')
+   -- start up server:
+   os.execute('node "' .. os.getenv('HOME') .. '/.tty.js/server.js" > "' .. os.getenv('HOME') .. '/.tty.js/server.log" &')
+   -- open up browser:
+   if jit.os == 'OSX' then
+      os.execute('open http://localhost:8000/')
+   end
+   print('[tty.js] server started on port 8000, graphics will be rendered into http://localhost:8000')
 else
-   print('[tty.js] server found, please navigate to http://localhost:8000')
+   print('[tty.js] server already running on port 8000, graphics will be rendered into http://localhost:8000')
 end
 
 return js
-
