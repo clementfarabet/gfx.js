@@ -29,7 +29,7 @@ for file in paths.files(js.template) do
 end
 
 local function log(id)
-   print('rendering cell [' .. id .. '.html]')
+   print('[tty.js] rendering cell <' .. id .. '>')
 end
 
 local function uid()
