@@ -14,5 +14,6 @@ refresh = js.image(i, {refresh=50})
 while true do
    i = vid:forward()
    refresh(i)
+   collectgarbage()
 end
 
