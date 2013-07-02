@@ -1,4 +1,4 @@
-# tty.js + HTML Injection
+# tty.js: a browser-based graphics server
 
 Originally forked from the amazing [tty.js](https://github.com/chjj/tty.js/).
 
@@ -109,3 +109,14 @@ values = torch.randn(100) -- in this case, y is provided, x defaults to range(0,
 -- a shortcut is also provided for quick plots:
 js.chart(torch.randn(100,2), {chart='scatter'})
 ```
+
+One other way of using the graphics server is to use just run Torch in a regular 
+terminal, and use the browser as a separate, asynchronous graphics server. Simply
+start torch with tty.js in your regular terminal:
+
+```
+torch -ltty.js
+```
+
+Doing this will automatically start up the node server, if not already done. Then
+any call to the graphics functions will trigger a render event in the browser!
