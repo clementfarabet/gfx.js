@@ -28,6 +28,10 @@ for file in paths.files(js.template) do
    end
 end
 
+local function log(id)
+   print('rendering cell [' .. id .. '.html]')
+end
+
 local function uid()
    return 'dom_' .. (os.time() .. math.random()):gsub('%.','')
 end
@@ -77,6 +81,10 @@ function js.image(img, opts)
    local f = io.open(js.static..uid..'.html','w')
    f:write(html)
    f:close()
+   log(uid)
+
+   -- id
+   return uid
 end
 
 function js.images(images, opts)
@@ -127,9 +135,14 @@ function js.images(images, opts)
       height = height, 
       content = table.concat(templates, '\n')
    }
-   local f = io.open(js.static..uid()..'.html','w')
+   local uid = uid()
+   local f = io.open(js.static..uid..'.html','w')
    f:write(html)
    f:close()
+   log(uid)
+
+   -- id
+   return uid
 end
 
 -- format datasets:
@@ -304,9 +317,41 @@ function js.chart(data, opts)
    local f = io.open(js.static..win..'.html','w')
    f:write(html)
    f:close()
+   log(win)
 
    -- return win handle
    return win
+end
+
+function js.redraw(id)
+   -- new uid
+   local uid = uid()
+
+   -- reload
+   local f = io.open(js.static..id..'.html','r')
+   local s = f:read('*all')
+   s = s:gsub(id,uid)
+   f:close()
+
+   -- rewrite
+   local f = io.open(js.static..uid..'.html','w')
+   f:write(s)
+   f:close()
+   log(uid)
+
+   -- return new uid
+   return uid
+end
+
+-- initialize context / server
+local status = io.popen('curl -s http://localhost:8000'):read('*all'):gsub('%s*','')
+if status == '' then
+   print('[tty.js] WARNING: server not running, graphics will be saved but not displayed')
+   print('[tty.js] to enable live display, start a tty.js server:')
+   print('[tty.js] $ node ~/.tty.js/server.js')
+   print('[tty.js] then navigate to http://localhost:8000')
+else
+   print('[tty.js] server found, please navigate to http://localhost:8000')
 end
 
 return js
