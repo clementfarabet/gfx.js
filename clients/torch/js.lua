@@ -40,6 +40,7 @@ function js.image(img, opts)
    -- options:
    opts = opts or {}
    local zoom = opts.zoom or 1
+   local refresh = opts.refresh or false
 
    -- img is a table?
    if type(img) == 'table' then
@@ -63,7 +64,7 @@ function js.image(img, opts)
    -- dump image:
    local uid = uid()
    local filename = uid .. '.jpg'
-   image.save(js.static..filename, img)
+   image.save(js.static .. filename, img)
 
    -- zoom
    local zoom = zoom or 1
@@ -77,11 +78,25 @@ function js.image(img, opts)
    end
 
    -- render template:
-   local html = t.image % {width=width, filename=js.prefix..filename}
+   local html = t.image % {
+      width = width, 
+      filename = js.prefix .. filename,
+      id = uid,
+      refresh = tostring(refresh),
+   }
    local f = io.open(js.static..uid..'.html','w')
    f:write(html)
    f:close()
    log(uid)
+
+   -- refresh?
+   if refresh then
+      return uid, function(newimage)
+         local tmpfile = '/tmp/buffer.jpg'
+         image.save(tmpfile, newimage)
+         os.execute('mv "'..tmpfile..'" "'..js.static..filename..'"')
+      end
+   end
 
    -- id
    return uid

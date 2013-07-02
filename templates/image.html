@@ -1,4 +1,12 @@
 <a href="${filename}" target="_blank" style="text-decoration:none;">
-    <img src="${filename}" width=${width}/>
+    <img id="${id}" src="${filename}" width=${width}/>
 </a>
 
+<script>
+    if (${refresh}) {
+        setInterval(function() {
+            var img = document.getElementById("${id}");
+            img.src = "${filename}?"+new Date().getTime();
+        }, 100);
+    }
+</script>
