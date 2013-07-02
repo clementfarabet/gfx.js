@@ -91,7 +91,7 @@ function js.image(img, opts)
 
    -- refresh?
    if refresh then
-      return uid, function(newimage)
+      return function(newimage)
          local tmpfile = '/tmp/buffer.jpg'
          image.save(tmpfile, newimage)
          os.execute('mv "'..tmpfile..'" "'..js.static..filename..'"')
