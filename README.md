@@ -115,7 +115,7 @@ terminal, and use the browser as a separate, asynchronous graphics server. Simpl
 start torch with tty.js in your regular terminal:
 
 ```
-torch -ltty.js
+torch -ltty.go
 ```
 
 Doing this will automatically start up the node server, if not already done. Then
