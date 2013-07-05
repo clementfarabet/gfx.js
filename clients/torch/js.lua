@@ -1,5 +1,5 @@
 --
--- A client to tty.js
+-- A client to gfx.js
 --
 
 require 'image'
@@ -10,8 +10,8 @@ text.format_operator()
 
 js = {}
 
-js.static = os.getenv('HOME') .. '/.tty.js/static/data/'
-js.template = os.getenv('HOME') .. '/.tty.js/templates/'
+js.static = os.getenv('HOME') .. '/.gfx.js/static/data/'
+js.template = os.getenv('HOME') .. '/.gfx.js/templates/'
 js.prefix = '/data/'
 
 os.execute('mkdir -p "' .. js.static .. '"')
@@ -29,7 +29,7 @@ for file in paths.files(js.template) do
 end
 
 local function log(id)
-   print('[tty.js] rendering cell <' .. id .. '>')
+   print('[gfx.js] rendering cell <' .. id .. '>')
 end
 
 local function uid()

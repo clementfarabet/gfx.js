@@ -4,11 +4,11 @@ echo "==> installing deps"
 unset CC CXX
 npm install
 
-echo "==> installing static resources into ~/.tty.js/"
-mkdir -p ~/.tty.js/
-cp -r * ~/.tty.js/
+echo "==> installing static resources into ~/.gfx.js/"
+mkdir -p ~/.gfx.js/
+cp -r * ~/.gfx.js/
 
-DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/tty/
+DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/gfx/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR
 if [ $? -ne 0 ]; then
@@ -20,5 +20,5 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "==> run me like this:"
-echo "$ node ~/.tty.js/server.js"
+echo "$ node ~/.gfx.js/server.js"
 
