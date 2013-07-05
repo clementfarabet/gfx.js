@@ -3,8 +3,8 @@
 -- opens up a browser window
 --
 
--- require js client
-require 'gfx.js'
+-- require gfx client
+gfx = require 'gfx.js'
 
 -- initialize context / server
 local status = io.popen('curl -s http://localhost:8000'):read('*all'):gsub('%s*','')
@@ -18,5 +18,6 @@ end
 
 -- open up browser:
 if jit.os == 'OSX' then
+   sys.sleep(0.1)
    os.execute('open http://localhost:8000/')
 end

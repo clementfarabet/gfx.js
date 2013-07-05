@@ -8,7 +8,7 @@ local json = require 'cjson'
 local Template = require('pl.text').Template
 text.format_operator()
 
-js = {}
+local js = {}
 
 js.static = os.getenv('HOME') .. '/.gfx.js/static/data/'
 js.template = os.getenv('HOME') .. '/.gfx.js/templates/'

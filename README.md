@@ -51,9 +51,9 @@ torch
 At the prompt, you can load the gfx.js client, and render things:
 
 ```lua
-js = require 'gfx.js'
-js.image(image.lena())
-js.image({
+gfx = require 'gfx.js'
+gfx.image(image.lena())
+gfx.image({
    image.lena()
    image.lena()
    image.lena()
@@ -73,7 +73,7 @@ I've also slowly started to integrate plots from [NVD3](http://nvd3.org/), and b
 them to Torch, so that they can seamlessly be called from the Torch repl:
 
 ```lua
-js.chart(data, {
+gfx.chart(data, {
    chart = 'line', -- or: bar, stacked, multibar, scatter
    width = 600,
    height = 450,
@@ -107,7 +107,7 @@ values = torch.randn(100,3)  -- the 3rd dimension is the optional size, only use
 values = torch.randn(100) -- in this case, y is provided, x defaults to range(0,N-1)
 
 -- a shortcut is also provided for quick plots:
-js.chart(torch.randn(100,2), {chart='scatter'})
+gfx.chart(torch.randn(100,2), {chart='scatter'})
 ```
 
 One other way of using the graphics server is to use just run Torch in a regular 
@@ -116,6 +116,7 @@ start torch with gfx.js in your regular terminal:
 
 ```
 torch -lgfx.go
+> gfx.chart()
 ```
 
 Doing this will automatically start up the node server, if not already done. Then
