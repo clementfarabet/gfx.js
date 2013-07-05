@@ -3,7 +3,7 @@ var tty = require('./');
 var app = tty.createServer({
     shell: 'bash',
     port: 8000,
-    static: process.env.HOME + '/.tty.js/static'
+    static: process.env.HOME + '/.gfx.js/static'
     // syncSession: true,
     // sessionTimeout: 3600*24*1000,
     // users: {
