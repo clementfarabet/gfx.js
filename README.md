@@ -1,4 +1,4 @@
-# tty.js: a browser-based graphics server
+# gfx.js: a browser-based graphics server
 
 Originally forked from the amazing [tty.js](https://github.com/chjj/tty.js/).
 
@@ -15,7 +15,7 @@ directory to have it rendered by the browser.
 For now, I'm focusing on one client, written in Lua, for 
 [Torch7](https://github.com/andresy/torch).
 
-![](https://raw.github.com/clementfarabet/tty.js/master/img/torchclient2.png)
+![](https://raw.github.com/clementfarabet/gfx.js/master/img/torchclient2.png)
 
 Check out [tty.js](https://github.com/chjj/tty.js/) for reference on the
 original project. Note: I'm simply extending their project, not modifying
@@ -37,7 +37,7 @@ Then simply run:
 Once installed, you can run the server like this:
 
 ```
-node ~/.tty.js/server.js
+node ~/.gfx.js/server.js
 ```
 
 And then open up a tab in your browser, at [http://localhost:8000](http://localhost:8000).
@@ -48,10 +48,10 @@ Start up a terminal, and then run Torch:
 torch
 ```
 
-At the prompt, you can load the tty.js client, and render things:
+At the prompt, you can load the gfx.js client, and render things:
 
 ```lua
-js = require 'tty.js'
+js = require 'gfx.js'
 js.image(image.lena())
 js.image({
    image.lena()
@@ -67,7 +67,7 @@ js.image({
 
 This will produce this output:
 
-![](https://raw.github.com/clementfarabet/tty.js/master/img/torchclient.png)
+![](https://raw.github.com/clementfarabet/gfx.js/master/img/torchclient.png)
 
 I've also slowly started to integrate plots from [NVD3](http://nvd3.org/), and bind
 them to Torch, so that they can seamlessly be called from the Torch repl:
@@ -112,10 +112,10 @@ js.chart(torch.randn(100,2), {chart='scatter'})
 
 One other way of using the graphics server is to use just run Torch in a regular 
 terminal, and use the browser as a separate, asynchronous graphics server. Simply
-start torch with tty.js in your regular terminal:
+start torch with gfx.js in your regular terminal:
 
 ```
-torch -ltty.go
+torch -lgfx.go
 ```
 
 Doing this will automatically start up the node server, if not already done. Then
