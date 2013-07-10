@@ -11,6 +11,11 @@ echo "==> installing static resources into ~/.gfx.js/"
 mkdir -p ~/.gfx.js/
 cp -r * ~/.gfx.js/
 
+if [[ `which torch-lua` == '' ]]; then
+    echo '==> torch not found, aborting... it must be in your path (this is a stupid installer)'
+    exit -1
+fi
+
 DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/gfx/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR || sudo mkdir -p $DIR
