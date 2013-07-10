@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-echo "==> installing deps"
-unset CC CXX
+echo "==> installing Node.js dependencies"
+if [[ `which npm` == '' ]]; then
+    echo '==> npm not found, aborting... please install Node.js + NPM'
+    exit -1
+fi
 npm install
 
 echo "==> installing static resources into ~/.gfx.js/"
@@ -10,15 +13,12 @@ cp -r * ~/.gfx.js/
 
 DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/gfx/
 echo "==> installing torch client into" $DIR
-mkdir -p $DIR
-if [ $? -ne 0 ]; then
-    sudo mkdir -p $DIR
-fi
-cp clients/torch/* $DIR
-if [ $? -ne 0 ]; then
-    sudo cp clients/torch/* $DIR
-fi
+mkdir -p $DIR || sudo mkdir -p $DIR
+cp clients/torch/* $DIR || sudo cp clients/torch/* $DIR
 
-echo "==> run me like this:"
+echo "==> graphics server installed in ~/.gfx.js:"
 echo "$ node ~/.gfx.js/server.js"
 
+echo "==> Torch client installed globally, run me like this:"
+echo "$ torch -lgfx.go"
+echo "(this will start the gfx server automatically)"
