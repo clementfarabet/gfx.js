@@ -98,15 +98,26 @@ tty.open = function() {
   });
 
   tty.socket.on('data', function(id, data) {
-    if (id == -1) {
+    if (id == -1 || id == -2) {
       var x = new XMLHttpRequest();
       x.onreadystatechange = function() {
         if (x.readyState==4 && x.status==200) {
+          // infer id
+          var res = x.responseText.match(/dom_(\d*)/);
+          var divid = res[1];
+
           // create new pane for resource:
-          var pane = new Pane;
-          var el = document.createElement('span');
+          var el = document.getElementById('pane_'+divid);
+          if (!el) {
+              var pane = new Pane;
+              el = document.createElement('span');
+              el.setAttribute('id', 'pane_'+divid);
+              console.log('creating new pane with ID = ' + divid);
+              pane.element.appendChild(el);
+          } else {
+              console.log('reusing pane with ID = ' + divid);
+          }
           el.innerHTML = x.responseText;
-          pane.element.appendChild(el);
 
           // force script eval:
           var scripts = el.getElementsByTagName('script');

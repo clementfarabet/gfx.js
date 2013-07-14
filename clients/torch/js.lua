@@ -41,6 +41,7 @@ function js.image(img, opts)
    opts = opts or {}
    local zoom = opts.zoom or 1
    local refresh = opts.refresh or false
+   local win = opts.win or uid()
 
    -- img is a table?
    if type(img) == 'table' then
@@ -62,8 +63,7 @@ function js.image(img, opts)
    end
 
    -- dump image:
-   local uid = uid()
-   local filename = uid .. '.jpg'
+   local filename = win .. '.jpg'
    image.save(js.static .. filename, img)
 
    -- zoom
@@ -81,13 +81,13 @@ function js.image(img, opts)
    local html = t.image % {
       width = width, 
       filename = js.prefix .. filename,
-      id = uid,
+      id = win,
       refresh = tostring(refresh),
    }
-   local f = io.open(js.static..uid..'.html','w')
+   local f = io.open(js.static..win..'.html','w')
    f:write(html)
    f:close()
-   log(uid)
+   log(win)
 
    -- refresh?
    if refresh then
@@ -99,7 +99,7 @@ function js.image(img, opts)
    end
 
    -- id
-   return uid
+   return win
 end
 
 function js.images(images, opts)
@@ -109,6 +109,7 @@ function js.images(images, opts)
    local zoom = opts.zoom or 1
    local width = opts.width or 1200
    local height = opts.height or 800
+   local win = opts.win or uid()
 
    -- do all images:
    local templates = {}
@@ -150,14 +151,13 @@ function js.images(images, opts)
       height = height, 
       content = table.concat(templates, '\n')
    }
-   local uid = uid()
-   local f = io.open(js.static..uid..'.html','w')
+   local f = io.open(js.static..win..'.html','w')
    f:write(html)
    f:close()
-   log(uid)
+   log(win)
 
    -- id
-   return uid
+   return win
 end
 
 -- format datasets:
