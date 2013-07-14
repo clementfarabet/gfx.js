@@ -45,8 +45,8 @@ function js.image(img, opts)
 
    -- img is a table?
    if type(img) == 'table' then
-      js.images(img, opts)
-      return
+      local win = js.images(img, opts)
+      return win
    end
 
    -- rescale image:
@@ -139,7 +139,7 @@ function js.images(images, opts)
       maxheight = math.max(maxheight, width)
 
       -- render template:
-      local html = t.image % {width=width, filename=js.prefix..filename}
+      local html = t.image % {width=width, filename=js.prefix..filename, refresh=false}
       table.insert(templates, html)
    end
 
@@ -149,6 +149,7 @@ function js.images(images, opts)
    local html = t.window % {
       width = width, 
       height = height, 
+      id = win,
       content = table.concat(templates, '\n')
    }
    local f = io.open(js.static..win..'.html','w')
