@@ -6,9 +6,9 @@ points = {}
 for i = 1,100 do
    table.insert(points, {
       x = i,
-      y = torch.normal(),
+      y = math.sin(i/10),
    })
-   win = gfx.chart({values=points}, {chart='line', win=win})
-   sys.sleep(1)
+   win = gfx.chart({values=points}, {chart='line', win=win, width=1024, height=768})
+   sys.sleep(0.1)
 end
 

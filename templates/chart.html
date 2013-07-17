@@ -23,7 +23,6 @@ nv.addGraph(function() {
 
     d3.select('#${id} svg')
         .datum(${data})
-        .transition().duration(500)
         .call(chart);
 
     nv.utils.windowResize(chart.update);
