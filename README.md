@@ -106,8 +106,11 @@ values = torch.randn(100,2)
 values = torch.randn(100,3)  -- the 3rd dimension is the optional size, only used by certain charts
 values = torch.randn(100) -- in this case, y is provided, x defaults to range(0,N-1)
 
--- a shortcut is also provided for quick plots:
+-- shortcuts are also provided for quick plots:
 gfx.chart(torch.randn(100,2), {chart='scatter'})
+gfx.chart(torch.randn(100), {chart='line'})  -- y is provided, x will be a range(1,N)
+gfx.chart({ torch.randn(100), torch.randn(100) })  -- multiple datasets
+gfx.chart({ {1,2,3,4,5,6,7,8,7,6,5,4,3,2,1}, torch.randn(100) })  -- multiple datasets, table format
 ```
 
 One other way of using the graphics server is to use just run Torch in a regular 

@@ -179,6 +179,14 @@ local function format(data, chart)
 
       -- format values:
       for i,dataset in ipairs(data) do
+         -- straight data?
+         if torch.typename(dataset) or not dataset.values then
+            dataset = {
+               values = dataset
+            }
+            data[i] = dataset
+         end
+         
          -- legend:
          dataset.key = dataset.key or ('Data #'..i)
 
@@ -186,7 +194,14 @@ local function format(data, chart)
          local values = dataset.values
          if type(values) == 'table' then
             -- remap values:
-            if not values[1].x or not values[1].y then
+            if type(values[1]) == 'number' then
+               for i,value in ipairs(values) do
+                  local val = {}
+                  val.x = i
+                  val.y = value
+                  values[i] = val
+               end
+            elseif not values[1].x or not values[1].y then
                for i,value in ipairs(values) do
                   value.x = value[1]
                   value.y = value[2]
