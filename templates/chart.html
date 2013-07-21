@@ -18,8 +18,8 @@ nv.addGraph(function() {
     chart
         .color(d3.scale.category10().range());
 
-    chart.xAxis.tickFormat(d3.format('.02f'))
-    chart.yAxis.tickFormat(d3.format('.02f'))
+    chart.xAxis.tickFormat(d3.format("${xFormat}"))
+    chart.yAxis.tickFormat(d3.format("${yFormat}"))
 
     d3.select('#${id} svg')
         .datum(${data})

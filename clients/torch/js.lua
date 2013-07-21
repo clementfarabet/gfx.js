@@ -306,6 +306,8 @@ function js.chart(data, opts)
    local background = opts.background or '#fff'
    local win = opts.win or uid()
    local chart = opts.chart or 'line'
+   local xFormat = opts.xFormat or '.02e'
+   local yFormat = opts.yFormat or '.02e'
 
    -- chart
    chart = charts[chart]
@@ -344,6 +346,8 @@ function js.chart(data, opts)
       chart = chart,
       background = background,
       button = button,
+      xFormat = xFormat,
+      yFormat = yFormat,
    }
    local f = io.open(js.static..win..'.html','w')
    f:write(html)
