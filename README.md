@@ -30,6 +30,8 @@ Then simply run:
 
 ```
 ./install.sh
+OR
+torch-rocks make
 ```
 
 ## Execution
@@ -43,14 +45,29 @@ torch -lgfx.stop
 
 And then open up a tab in your browser, at [http://localhost:8000](http://localhost:8000).
 
-You can optionally specify a different port as an env variable:
+The browser acts as a passive graphics backend. The server monitors the creation of new
+resources (charts, plots, videos, ...), and lets the browser know it should render them.
+
+The framework is very flexible: resources can be rendered by a client (Torch) with no
+browser open, and even no server listening/running. The resources generated will still
+be saved, and can be visualized later (very useful to generate resources/charts on
+a server with no X session).
+
+You can optionally specify a different port as an env variable, if the default (8000)
+is not available:
 
 ```
 PORT=4321 torch -lgfx.start
 PORT=4321 torch -lgfx.stop
 ```
 
-On Mac OS, we provide a shortcut to start the server in the background and automatically
+Also, we provide a useful PS script, which lists running servers:
+
+```
+torch -lgfx.ps
+```
+
+On Mac OS, we also provide a shortcut to start the server in the background and automatically
 open the browser at the right location:
 
 ```
@@ -131,14 +148,15 @@ gfx.chart({ torch.randn(100), torch.randn(100) })  -- multiple datasets
 gfx.chart({ {1,2,3,4,5,6,7,8,7,6,5,4,3,2,1}, torch.randn(100) })  -- multiple datasets, table format
 ```
 
-One other way of using the graphics server is to use just run Torch in a regular 
-terminal, and use the browser as a separate, asynchronous graphics server. Simply
-start torch with gfx.js in your regular terminal:
+As explained above, one can generate resources/charts/figures with no server listening.
+One can connect a server later on, and redraw the last resources generated. Here are a few
+useful commands for that:
 
+```lua
+gfx = require 'gfx.js'
+ids = gfx.list(10) -- will list the last 10 figures generated (each figure has a unique ID)
+print(ids[1])
+-- will print something like: dom_1212817597132847893127489
+gfx.redraw(ids[1]) -- will redraw this resource
+gfx.redraw(10) -- will redraw the last 10 resources available (sorted by descending time)
 ```
-torch -lgfx.go
-> gfx.chart()
-```
-
-Doing this will automatically start up the node server, if not already done. Then
-any call to the graphics functions will trigger a render event in the browser!
