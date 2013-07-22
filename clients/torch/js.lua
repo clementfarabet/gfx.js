@@ -373,8 +373,8 @@ function js.redraw(id)
    if type(id) == 'number' then
       -- list last elements, and redraw them:
       local ids = js.list(id)
-      for _,id in ipairs(ids) do
-         js.redraw(id)
+      for i = #ids,1,-1 do
+         js.redraw(ids[i])
       end
    else
       -- ext?
