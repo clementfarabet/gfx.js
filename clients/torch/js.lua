@@ -484,4 +484,6 @@ function js.show(port)
    end
 end
 
+gfx = js
+
 return js
