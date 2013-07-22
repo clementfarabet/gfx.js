@@ -393,7 +393,6 @@ function js.startserver(port)
 
    -- running?
    local status = io.popen('curl -s http://localhost:'..port..'/'):read('*all'):gsub('%s*','')
-   print('curl -s http://localhost:'..port..'/')
    if status == '' then
       -- start up server:
       os.execute('node "' .. os.getenv('HOME') .. '/.gfx.js/server.js" --port '..port..' > "' .. os.getenv('HOME') .. '/.gfx.js/server.log" &')
@@ -401,6 +400,37 @@ function js.startserver(port)
    else
       print('[gfx.js] server already running on port '..port..', graphics will be rendered into http://localhost:'..port)
    end
+end
+
+function js.listservers()
+   -- find job
+   local pipe = io.popen('ps -ef | grep -v grep | grep "server.js --port"')
+   local servers = {}
+   while true do
+      local line = pipe:read('*line')
+      if line then
+         local splits = stringx.split(line)
+         local pid = splits[2]
+         local port = splits[#splits]
+         table.insert(servers, {
+            pid = pid,
+            port = port
+         })
+      else
+         break
+      end
+   end
+
+   -- report:
+   if #servers > 0 then
+      print('[gfx.js] found ' .. #servers .. ' server(s): ')
+      for _,server in ipairs(servers) do
+         print('+ server running on port ' .. server.port .. ', with pid = ' .. server.pid)
+      end
+   else
+      print('[gfx.js] no server running')
+   end
+   return servers
 end
 
 function js.killserver(port)
