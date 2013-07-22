@@ -368,23 +368,40 @@ function js.chart(data, opts)
 end
 
 function js.redraw(id)
-   -- new uid
-   local uid = uid()
+   -- id: if number then it means redraw last N elements
+   -- if string, then it's an actual id
+   if type(id) == 'number' then
+      -- list last elements, and redraw them:
+      local ids = js.list(id)
+      for _,id in ipairs(ids) do
+         js.redraw(id)
+      end
+   else
+      -- ext?
+      if not id:find('html$') then
+         id = id .. '.html'
+      end
+      -- touch the resource will force a redraw (or a new draw if window was closed)
+      os.execute('touch "'..js.static..id..'"')
+   end
+end
 
-   -- reload
-   local f = io.open(js.static..id..'.html','r')
-   local s = f:read('*all')
-   s = s:gsub(id,uid)
-   f:close()
-
-   -- rewrite
-   local f = io.open(js.static..uid..'.html','w')
-   f:write(s)
-   f:close()
-   log(uid)
-
-   -- return new uid
-   return uid
+function js.list(N)
+   -- default max
+   N = N or 10
+   -- list last N elements
+   local pipe = io.popen('ls -t "'..js.static..'"dom_*.html')
+   local ids = {}
+   for i = 1,N do
+      local line = pipe:read('*line')
+      if line then
+         local _,_,id = line:find('(dom_%d*)%.html$')
+         table.insert(ids,id)
+      else
+         break
+      end
+   end
+   return ids
 end
 
 function js.startserver(port)
