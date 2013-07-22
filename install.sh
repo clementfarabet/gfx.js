@@ -10,6 +10,7 @@ npm install
 echo "==> installing static resources into ~/.gfx.js/"
 mkdir -p ~/.gfx.js/
 cp -r * ~/.gfx.js/
+chmod -R a+w ~/.gfx.js/
 
 if [[ `which torch-lua` == '' ]]; then
     echo '==> torch not found, aborting... it must be in your path (this is a stupid installer)'
