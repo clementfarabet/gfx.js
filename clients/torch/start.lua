@@ -1,6 +1,5 @@
 --
--- A convenience script, that automatically starts up a server, and
--- opens up a browser window
+-- A convenience script, that starts up a server
 --
 
 -- require gfx client
@@ -12,5 +11,5 @@ port = os.getenv('PORT')
 -- initialize context / server
 gfx.startserver(port)
 
--- open up browser
-gfx.show()
+-- exit
+os.exit()

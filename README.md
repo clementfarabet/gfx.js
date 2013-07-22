@@ -34,18 +34,36 @@ Then simply run:
 
 ## Execution
 
-Once installed, you can run the server like this:
+Once installed, you can start/stop the server like this:
 
 ```
-node ~/.gfx.js/server.js
+torch -lgfx.start
+torch -lgfx.stop
 ```
 
 And then open up a tab in your browser, at [http://localhost:8000](http://localhost:8000).
 
-Start up a terminal, and then run Torch:
+You can optionally specify a different port as an env variable:
 
 ```
+PORT=4321 torch -lgfx.start
+PORT=4321 torch -lgfx.stop
+```
+
+On Mac OS, we provide a shortcut to start the server in the background and automatically
+open the browser at the right location:
+
+```
+torch -lgfx.go
+```
+
+Alternatively, you can do things step by step:
+
+```
+torch -lgfx.start
+# starts a server...
 torch
+# starts a Torch session
 ```
 
 At the prompt, you can load the gfx.js client, and render things:
@@ -62,7 +80,7 @@ gfx.image({
    image.lena()
    image.lena()
    image.lena()
-}, {zoom=0.5})
+}, {zoom=0.5, legends={'Image 1', 'Image 2'}})
 ```
 
 This will produce this output:

@@ -387,4 +387,54 @@ function js.redraw(id)
    return uid
 end
 
+function js.startserver(port)
+   -- port:
+   port = port or 8000
+
+   -- running?
+   local status = io.popen('curl -s http://localhost:'..port..'/'):read('*all'):gsub('%s*','')
+   print('curl -s http://localhost:'..port..'/')
+   if status == '' then
+      -- start up server:
+      os.execute('node "' .. os.getenv('HOME') .. '/.gfx.js/server.js" --port '..port..' > "' .. os.getenv('HOME') .. '/.gfx.js/server.log" &')
+      print('[gfx.js] server started on port '..port..', graphics will be rendered into http://localhost:'..port)
+   else
+      print('[gfx.js] server already running on port '..port..', graphics will be rendered into http://localhost:'..port)
+   end
+end
+
+function js.killserver(port)
+   -- port:
+   port = port or 8000
+
+   -- find job
+   local line = io.popen('ps -ef | grep -v grep | grep "server.js --port ' .. port .. '"'):read('*line')
+   local uid
+   if line then
+      local splits = stringx.split(line)
+      uid = splits[2]
+   end
+
+   -- kill job
+   if uid then
+      local res = io.popen('kill ' .. uid):read('*all')
+      print('[gfx.js] server stopped on port ' .. port)
+   else
+      print('[gfx.js] server not found on port ' .. port)
+   end
+end
+
+function js.show(port)
+   -- port:
+   port = port or 8000
+
+   -- browse:
+   if jit.os == 'OSX' then
+      sys.sleep(0.1)
+      os.execute('open http://localhost:'..port)
+   else
+      print('[gfx.js] show() is only supported on Mac OS - other OSes: navigate to http://localhost:PORT by hand')
+   end
+end
+
 return js
