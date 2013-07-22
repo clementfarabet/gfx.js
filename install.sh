@@ -19,11 +19,10 @@ fi
 DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/gfx/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR || sudo mkdir -p $DIR
-cp clients/torch/* $DIR || sudo cp clients/torch/* $DIR
-
-echo "==> graphics server installed in ~/.gfx.js:"
-echo "$ node ~/.gfx.js/server.js"
+cp clients/torch/* $DIR 2> /dev/null || sudo cp clients/torch/* $DIR 2> /dev/null
 
 echo "==> Torch client installed globally, run me like this:"
+echo "$ torch -lgfx.start"
+echo "or"
 echo "$ torch -lgfx.go"
 echo "(this will start the gfx server automatically)"
