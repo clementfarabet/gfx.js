@@ -42,6 +42,7 @@ function js.image(img, opts)
    local zoom = opts.zoom or 1
    local refresh = opts.refresh or false
    local win = opts.win or uid()
+   local legend = opts.legend
 
    -- img is a table?
    if type(img) == 'table' then
@@ -82,6 +83,7 @@ function js.image(img, opts)
       width = width, 
       filename = js.prefix .. filename,
       id = win,
+      legend = legend or '',
       refresh = tostring(refresh),
    }
    local f = io.open(js.static..win..'.html','w')
@@ -109,12 +111,14 @@ function js.images(images, opts)
    local zoom = opts.zoom or 1
    local width = opts.width or 1200
    local height = opts.height or 800
+   local legends = opts.legends or {}
+   local legend = opts.legend
    local win = opts.win or uid()
 
    -- do all images:
    local templates = {}
    local maxwidth,maxheight = 0,0
-   for _,img in ipairs(images) do
+   for i,img in ipairs(images) do
       -- rescale image:
       img = img:clone():add(-img:min()):mul(1/img:max())
 
@@ -139,7 +143,12 @@ function js.images(images, opts)
       maxheight = math.max(maxheight, width)
 
       -- render template:
-      local html = t.image % {width=width, filename=js.prefix..filename, refresh=false}
+      local html = t.image % {
+         width = width, 
+         filename = js.prefix..filename, 
+         legend = legends[i] or (i==1 and legend) or (not legend and ('Image #'..i)) or '',
+         refresh = false
+      }
       table.insert(templates, html)
    end
 
