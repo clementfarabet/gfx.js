@@ -3,7 +3,7 @@ require 'gfx.go'
 
 sys.sleep(1)
 
-N = 500
+N = 1000
 
 n = torch.Tensor(N,2):normal(0,1)
 u = torch.Tensor(N,2):uniform(-1,1)
