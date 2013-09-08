@@ -2,7 +2,8 @@ package = "gfx.js"
 version = "scm-0"
 
 source = {
-   url = "git://github.com/clementfarabet/gfx.js"
+   url = "git://github.com/clementfarabet/gfx.js",
+   dir = "gfx.js"
 }
 
 description = {
