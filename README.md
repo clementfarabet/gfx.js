@@ -28,9 +28,13 @@ installed. With older versions of Node.js, things won't be stable.
 
 Then simply run:
 
+```sh
+torch-rocks install https://raw.github.com/clementfarabet/gfx.js/master/gfx.js-scm-0.rockspec
 ```
-./install.sh
-OR
+
+Or, if you cloned the repo locally:
+
+```sh
 torch-rocks make
 ```
 
