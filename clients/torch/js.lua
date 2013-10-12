@@ -6,6 +6,7 @@ require 'image'
 require 'pl'
 local json = require 'cjson'
 local Template = require('pl.text').Template
+local gm = require 'graphicsmagick'
 text.format_operator()
 
 local js = {}
@@ -51,7 +52,7 @@ function js.image(img, opts)
    end
 
    -- rescale image:
-   img = img:clone():add(-img:min()):mul(1/img:max())
+   img = img:clone():float():add(-img:min()):mul(1/img:max())
 
    -- img is a collection?
    if img:nDimension() == 4 or (img:nDimension() == 3 and img:size(1) > 3) then
@@ -63,9 +64,15 @@ function js.image(img, opts)
       return
    end
 
+   -- force image into RGB:
+   if img:nDimension() == 2 or (img:nDimension() == 3 and img:size(1) == 1) then
+      img = img:reshape(1,img:size(1),img:size(2))
+      img = img:expand(3,img:size(2),img:size(3))
+   end
+
    -- dump image:
-   local filename = win .. '.jpg'
-   image.save(js.static .. filename, img)
+   local filename = win .. '.png'
+   gm.Image():fromTensor(img,'RGB','DHW'):save(js.static .. filename)
 
    -- zoom
    local zoom = zoom or 1

@@ -18,7 +18,8 @@ A graphics backend for the browser, with a Torch7 client.
 dependencies = {
    "torch >= 7.0",
    "image >= 1.0",
-   "penlight >= 1.1.0"
+   "penlight >= 1.1.0",
+   "graphicsmagick >= 1.scm"
 }
 
 build = {
