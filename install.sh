@@ -17,7 +17,7 @@ if [[ `which torch-lua` == '' ]]; then
     exit -1
 fi
 
-DIR=`torch-lua -lpaths -e "print(paths.install_lua_path)"`/gfx/
+DIR=`dirname \`which torch-lua\``/../share/torch/lua/gfx/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR || sudo mkdir -p $DIR
 cp clients/torch/* $DIR 2> /dev/null || sudo cp clients/torch/* $DIR 2> /dev/null
