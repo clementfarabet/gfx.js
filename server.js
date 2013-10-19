@@ -6,9 +6,9 @@ var app = tty.createServer({
     static: process.env.HOME + '/.gfx.js/static',
     // syncSession: true,
     // sessionTimeout: 3600*24*1000,
-    users: {
-        u:"p"
-    }
+    // users: {
+    //     u:"p"
+    // }
 });
 
 app.get('/foo', function(req, res, next) {
