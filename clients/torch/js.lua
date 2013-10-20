@@ -52,7 +52,8 @@ function js.image(img, opts)
    end
 
    -- rescale image:
-   img = img:clone():float():add(-img:min()):mul(1/img:max())
+   img = torch.FloatTensor(img:size()):copy(img)
+   img:add(-img:min()):mul(1/img:max())
 
    -- img is a collection?
    if img:nDimension() == 4 or (img:nDimension() == 3 and img:size(1) > 3) then
@@ -72,7 +73,7 @@ function js.image(img, opts)
 
    -- dump image:
    local filename = win .. '.png'
-   gm.Image():fromTensor(img,'RGB','DHW'):save(js.static .. filename)
+   gm.save(js.static .. filename, img)
 
    -- zoom
    local zoom = zoom or 1
@@ -101,8 +102,9 @@ function js.image(img, opts)
    -- refresh?
    if refresh then
       return function(newimage)
+         -- dump image:
          local tmpfile = '/tmp/buffer.jpg'
-         image.save(tmpfile, newimage)
+         gm.save(tmpfile, newimage)
          os.execute('mv "'..tmpfile..'" "'..js.static..filename..'"')
       end
    end
@@ -127,12 +129,13 @@ function js.images(images, opts)
    local maxwidth,maxheight = 0,0
    for i,img in ipairs(images) do
       -- rescale image:
-      img = img:clone():add(-img:min()):mul(1/img:max())
+      img = torch.FloatTensor(img:size()):copy(img)
+      img:add(-img:min()):mul(1/img:max())
 
       -- dump image:
       local uid = uid()
-      local filename = uid .. '.jpg'
-      image.save(js.static..filename, img)
+      local filename = uid .. '.png'
+      gm.save(js.static .. filename, img)
 
       -- zoom
       local zoom = zoom or 1
