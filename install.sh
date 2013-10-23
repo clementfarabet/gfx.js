@@ -12,12 +12,12 @@ mkdir -p ~/.gfx.js/
 cp -r * ~/.gfx.js/
 chmod -R a+w ~/.gfx.js/
 
-if [[ `which torch-lua` == '' ]]; then
+if [[ `which th` == '' ]]; then
     echo '==> torch not found, aborting... it must be in your path (this is a stupid installer)'
     exit -1
 fi
 
-DIR=`dirname \`which torch-lua\``/../share/torch/lua/gfx/
+DIR=`dirname \`which th\``/../share/torch/lua/gfx/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR || sudo mkdir -p $DIR
 cp clients/torch/* $DIR 2> /dev/null || sudo cp clients/torch/* $DIR 2> /dev/null
