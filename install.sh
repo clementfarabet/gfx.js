@@ -17,7 +17,7 @@ if [[ `which th` == '' ]]; then
     exit -1
 fi
 
-DIR=`dirname \`which th\``/../share/torch/lua/gfx/
+DIR=`dirname \`which th\``/../share/lua/5.1/gfx/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR || sudo mkdir -p $DIR
 cp clients/torch/* $DIR 2> /dev/null || sudo cp clients/torch/* $DIR 2> /dev/null
