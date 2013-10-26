@@ -24,6 +24,6 @@ dependencies = {
 
 build = {
    type = "command",
-   build_command = "",
-   install_command = "./install.sh"
+   build_command = "ls",
+   install_command = "sh install.sh"
 }
