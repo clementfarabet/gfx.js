@@ -29,22 +29,22 @@ installed. With older versions of Node.js, things won't be stable.
 Then simply run:
 
 ```sh
-torch-rocks install https://raw.github.com/clementfarabet/gfx.js/master/gfx.js-scm-0.rockspec
+luarocks install https://raw.github.com/clementfarabet/gfx.js/master/gfx.js-scm-0.rockspec
 ```
 
 Or, if you cloned the repo locally:
 
 ```sh
-torch-rocks make
+luarocks make
 ```
 
 ## Execution
 
-Once installed, you can start/stop the server like this:
+Once installed, you can start/stop the server like this (I'm assuming a LuaJIT-based install):
 
 ```
-torch -lgfx.start
-torch -lgfx.stop
+luajit -lgfx.start
+luajit -lgfx.stop
 ```
 
 And then open up a tab in your browser, at [http://localhost:8000](http://localhost:8000).
@@ -52,7 +52,7 @@ And then open up a tab in your browser, at [http://localhost:8000](http://localh
 The browser acts as a passive graphics backend. The server monitors the creation of new
 resources (charts, plots, videos, ...), and lets the browser know it should render them.
 
-The framework is very flexible: resources can be rendered by a client (Torch) with no
+The framework is very flexible: resources can be rendered by a client (luajit) with no
 browser open, and even no server listening/running. The resources generated will still
 be saved, and can be visualized later (very useful to generate resources/charts on
 a server with no X session).
@@ -61,29 +61,29 @@ You can optionally specify a different port as an env variable, if the default (
 is not available:
 
 ```
-PORT=4321 torch -lgfx.start
-PORT=4321 torch -lgfx.stop
+PORT=4321 luajit -lgfx.start
+PORT=4321 luajit -lgfx.stop
 ```
 
 Also, we provide a useful PS script, which lists running servers:
 
 ```
-torch -lgfx.ps
+luajit -lgfx.ps
 ```
 
 On Mac OS, we also provide a shortcut to start the server in the background and automatically
 open the browser at the right location:
 
 ```
-torch -lgfx.go
+luajit -lgfx.go
 ```
 
 Alternatively, you can do things step by step:
 
 ```
-torch -lgfx.start
+luajit -lgfx.start
 # starts a server...
-torch
+luajit
 # starts a Torch session
 ```
 
