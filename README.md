@@ -28,8 +28,12 @@ installed. With older versions of Node.js, things won't be stable. You also
 need libgraphicsmagick-dev to be installed:
 
 ```sh
-brew install graphicsmagick             # OS X
-apt-get install libgraphicsmagick1-dev  # Ubuntu
+# OS X
+brew install graphicsmagick
+
+# Ubuntu
+apt-get install libgraphicsmagick1-dev
+apt-get install graphicsmagick
 ```
 
 Then simply run:
