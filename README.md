@@ -24,7 +24,17 @@ any of the core structure, so it should remain compatible.
 ## Installation
 
 You have to have Node.js (important, Version >= 0.10.0), NPM, and Torch7
-installed. With older versions of Node.js, things won't be stable.
+installed. With older versions of Node.js, things won't be stable. You also
+need libgraphicsmagick-dev to be installed:
+
+```sh
+# OS X
+brew install graphicsmagick
+
+# Ubuntu
+apt-get install libgraphicsmagick1-dev
+apt-get install graphicsmagick
+```
 
 Then simply run:
 
