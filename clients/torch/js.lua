@@ -486,9 +486,12 @@ function js.show(port)
    port = port or 8000
 
    -- browse:
-   if jit.os == 'OSX' or jit.os == 'Linux' then
+   if jit.os == 'OSX' then
       sys.sleep(0.1)
       os.execute('open http://localhost:'..port)
+   elseif jit.os == 'Linux' then
+      sys.sleep(0.1)
+      os.execute('xdg-open http://localhost:'..port)
    else
       print('[gfx.js] show() is only supported on Mac OS/Linux - other OSes: navigate to http://localhost:PORT by hand')
    end
