@@ -12,18 +12,18 @@ mkdir -p ~/.gfx.js/
 cp -r * ~/.gfx.js/
 chmod -R a+w ~/.gfx.js/
 
-if [[ `which th` == '' ]]; then
-    echo '==> torch not found, aborting... it must be in your path (this is a stupid installer)'
+if [[ `which luajit` == '' ]]; then
+    echo '==> luajit not found, aborting... it must be in your path (this is a stupid installer)'
     exit -1
 fi
 
-DIR=`dirname \`which th\``/../share/lua/5.1/gfx/
+DIR=`dirname \`which luajit\``/../share/lua/5.1/gfx/
 echo "==> installing torch client into" $DIR
 mkdir -p $DIR || sudo mkdir -p $DIR
 cp clients/torch/* $DIR 2> /dev/null || sudo cp clients/torch/* $DIR 2> /dev/null
 
 echo "==> Torch client installed globally, run me like this:"
-echo "$ torch -lgfx.start"
+echo "$ luajit -lgfx.start"
 echo "or"
-echo "$ torch -lgfx.go"
+echo "$ luajit -lgfx.go"
 echo "(this will start the gfx server automatically)"
