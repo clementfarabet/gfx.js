@@ -47,7 +47,7 @@ function js.image(img, opts)
 
    -- img is a table?
    if type(img) == 'table' then
-      local win = js.images(img, opts)
+      win = js.images(img, opts)
       return win
    end
 
@@ -61,8 +61,7 @@ function js.image(img, opts)
       for i = 1,img:size(1) do
          images[i] = img[i]
       end
-      js.images(images, opts)
-      return
+      return js.images(images, opts)
    end
 
    -- force image into RGB:
