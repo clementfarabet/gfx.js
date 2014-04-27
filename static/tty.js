@@ -97,7 +97,7 @@ tty.open = function() {
     tty.emit('connect');
   });
 
-  tty.socket.on('data', function(id, data) {
+  tty.socket.on('data', function(id, data, func) {
     if (id == -1 || id == -2) {
       var x = new XMLHttpRequest();
       x.onreadystatechange = function() {
@@ -131,6 +131,7 @@ tty.open = function() {
     }
     if (!tty.terms[id]) return;
     tty.terms[id].write(data);
+    func('ack');
   });
 
   tty.socket.on('kill', function(id) {
