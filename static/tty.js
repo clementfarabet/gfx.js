@@ -79,7 +79,8 @@ tty.open = function() {
   h1 = tty.elements.h1;
   open = tty.elements.open;
   lights = tty.elements.lights;
-
+  tty.toggleLights(); /* make dark mode the default light-scheme */
+    
   if (open) {
     on(open, 'click', function() {
       new Window;
