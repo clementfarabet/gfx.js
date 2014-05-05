@@ -4,6 +4,7 @@ local help = [[
 Usage: gfx [options] image-filename1 [image-filename2] [image-filename3]
 Options:
   -collage : instead of displaying the list of images in separate windows, loads them as a collage in the same window
+  -clearcache : clears all the cached dom elements in ~/.gfx.js/static/data
 
 Example:
 gfx a.jpg
@@ -13,13 +14,23 @@ gfx *.jpg
 
 local list = {}
 local collage = false
+local clearcache = false
 for k,v in ipairs(arg) do
     if v == '-collage' then
        collage = true
+    elseif v == '-clearcache' then
+    	   clearcache = true;
+	   break;
     else
 	table.insert(list, v)
     end
 end
+
+if clearcache then
+   os.execute('rm -rf ' .. os.getenv('HOME') .. '/.gfx.js/static/data/*')
+   os.exit(1)
+end
+
 
 if #list < 1 then
    print(help)
