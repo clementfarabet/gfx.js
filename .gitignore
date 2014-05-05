@@ -1,4 +1,4 @@
-Bnode_modules/
+node_modules/
 *.swp
 build/*
 .lock-wscript
