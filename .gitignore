@@ -1,4 +1,4 @@
-node_modules/
+Bnode_modules/
 *.swp
 build/*
 .lock-wscript
@@ -7,3 +7,5 @@ Makefile.gyp
 *.Makefile
 *.target.gyp.mk
 *.node
+*~
+\#*

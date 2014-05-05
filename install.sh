@@ -22,8 +22,15 @@ echo "==> installing torch client into" $DIR
 mkdir -p $DIR || sudo mkdir -p $DIR
 cp clients/torch/* $DIR 2> /dev/null || sudo cp clients/torch/* $DIR 2> /dev/null
 
+BINDIR=`dirname \`which luajit\``
+cp bin/gfx $BINDIR
+
 echo "==> Torch client installed globally, run me like this:"
 echo "$ luajit -lgfx.start"
 echo "or"
 echo "$ luajit -lgfx.go"
 echo "(this will start the gfx server automatically)"
+
+echo "gfx command-line binary installed. Use it to display images quickly"
+echo "$ gfx test.jpg"
+
