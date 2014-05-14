@@ -1,0 +1,57 @@
+#!/usr/bin/env luajit
+
+local help = [[
+Usage: gfx [options] image-filename1 [image-filename2] [image-filename3]
+Options:
+  -collage : instead of displaying the list of images in separate windows, loads them as a collage in the same window
+  -clearcache : clears all the cached dom elements in ~/.gfx.js/static/data
+
+Example:
+gfx a.jpg
+
+gfx *.jpg
+]]
+
+local list = {}
+local collage = false
+local clearcache = false
+for k,v in ipairs(arg) do
+    if v == '-collage' then
+       collage = true
+    elseif v == '-clearcache' then
+    	   clearcache = true;
+	   break;
+    else
+	table.insert(list, v)
+    end
+end
+
+if clearcache then
+   os.execute('rm -rf ' .. os.getenv('HOME') .. '/.gfx.js/static/data/*')
+   os.exit(1)
+end
+
+
+if #list < 1 then
+   print(help)
+   os.exit(1)
+end
+
+local gfx = require 'gfx.js'
+local gm = require 'graphicsmagick'
+
+for i=1,#list do
+    local path = list[i]
+    local img = gm.Image()
+    img = img:load(path):toTensor('float', 'RGB', 'DHW')
+    list[i] = img
+end
+
+if collage then
+   gfx.image(list)
+else
+   for i=1,#list do
+       gfx.image(list[i])
+   end
+end
+

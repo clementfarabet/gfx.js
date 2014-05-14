@@ -418,13 +418,13 @@ function js.startserver(port)
    port = port or 8000
 
    -- running?
-   local status = io.popen('curl -s http://localhost:'..port..'/'):read('*all'):gsub('%s*','')
+   local status = io.popen('curl -s https://localhost:'..port..'/'):read('*all'):gsub('%s*','')
    if status == '' then
       -- start up server:
       os.execute('node "' .. os.getenv('HOME') .. '/.gfx.js/server.js" --port '..port..' > "' .. os.getenv('HOME') .. '/.gfx.js/server.log" &')
-      print('[gfx.js] server started on port '..port..', graphics will be rendered into http://localhost:'..port)
+      print('[gfx.js] server started on port '..port..', graphics will be rendered into https://localhost:'..port)
    else
-      print('[gfx.js] server already running on port '..port..', graphics will be rendered into http://localhost:'..port)
+      print('[gfx.js] server already running on port '..port..', graphics will be rendered into https://localhost:'..port)
    end
 end
 
@@ -487,9 +487,12 @@ function js.show(port)
    -- browse:
    if jit.os == 'OSX' then
       sys.sleep(0.1)
-      os.execute('open http://localhost:'..port)
+      os.execute('open https://localhost:'..port)
+   elseif jit.os == 'Linux' then
+      sys.sleep(0.1)
+      os.execute('xdg-open https://localhost:'..port)
    else
-      print('[gfx.js] show() is only supported on Mac OS - other OSes: navigate to http://localhost:PORT by hand')
+      print('[gfx.js] show() is only supported on Mac OS/Linux - other OSes: navigate to https://localhost:PORT by hand')
    end
 end
 

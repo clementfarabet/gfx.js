@@ -28,7 +28,6 @@ var initialTitle = document.title;
  */
 
 var EventEmitter = Terminal.EventEmitter
-  , isMac = Terminal.isMac
   , inherits = Terminal.inherits
   , on = Terminal.on
   , off = Terminal.off
@@ -54,13 +53,15 @@ tty.elements;
  */
 
 tty.open = function() {
-  var
-    pathComponents = document.location.pathname.split('/'),
-    // Strip last part (either index.html or "", presumably)
-    baseURL = pathComponents.slice(0,pathComponents.length-1).join('/') + '/',
-    resource = baseURL.substring(1) + "socket.io";
+  if (document.location.pathname) {
+    var parts = document.location.pathname.split('/')
+      , base = parts.slice(0, parts.length - 1).join('/') + '/'
+      , resource = base.substring(1) + 'socket.io';
 
-  tty.socket = io.connect(null, { resource: resource });
+    tty.socket = io.connect(null, { resource: resource });
+  } else {
+    tty.socket = io.connect();
+  }
 
   tty.windows = [];
   tty.terms = {};
@@ -78,7 +79,8 @@ tty.open = function() {
   h1 = tty.elements.h1;
   open = tty.elements.open;
   lights = tty.elements.lights;
-
+  tty.toggleLights(); /* make dark mode the default light-scheme */
+    
   if (open) {
     on(open, 'click', function() {
       new Window;
@@ -90,14 +92,13 @@ tty.open = function() {
       tty.toggleLights();
     });
   }
-  tty.toggleLights();
 
   tty.socket.on('connect', function() {
     tty.reset();
     tty.emit('connect');
   });
 
-  tty.socket.on('data', function(id, data) {
+  tty.socket.on('data', function(id, data, func) {
     if (id == -1 || id == -2) {
       var x = new XMLHttpRequest();
       x.onreadystatechange = function() {
@@ -131,6 +132,7 @@ tty.open = function() {
     }
     if (!tty.terms[id]) return;
     tty.terms[id].write(data);
+    func('ack');
   });
 
   tty.socket.on('kill', function(id) {
@@ -177,7 +179,7 @@ tty.open = function() {
       if (!tty.windows[i].focused) continue;
       tty.windows[i].focused.pollProcessName();
     }
-  }, 1000);
+  }, 2 * 1000);
 
   // Keep windows maximized.
   on(window, 'resize', function() {
@@ -879,7 +881,10 @@ function Tab(win, socket) {
   var cols = win.cols
     , rows = win.rows;
 
-  Terminal.call(this, cols, rows);
+  Terminal.call(this, {
+    cols: cols,
+    rows: rows
+  });
 
   var button = document.createElement('div');
   button.className = 'tab';
@@ -1036,97 +1041,65 @@ Tab.prototype.destroy = function() {
 };
 
 Tab.prototype.hookKeys = function() {
+  var self = this;
+
+  // Alt-[jk] to quickly swap between windows.
   this.on('key', function(key, ev) {
-    // ^A for screen-key-like prefix.
-    if (Terminal.screenKeys) {
-      if (this.pendingKey) {
-        this._ignoreNext();
-        this.pendingKey = false;
-        this.specialKeyHandler(key);
-        return;
-      }
-
-      // ^A
-      if (key === '\x01') {
-        this._ignoreNext();
-        this.pendingKey = true;
-        return;
-      }
+    if (Terminal.focusKeys === false) {
+      return;
     }
 
-    // Alt-` to quickly swap between windows.
-    if (key === '\x1b`') {
-      var i = indexOf(tty.windows, this.window) + 1;
+    var offset
+      , i;
 
-      this._ignoreNext();
-      if (tty.windows[i]) return tty.windows[i].highlight();
+    if (key === '\x1bj') {
+      offset = -1;
+    } else if (key === '\x1bk') {
+      offset = +1;
+    } else {
+      return;
+    }
+
+    i = indexOf(tty.windows, this.window) + offset;
+
+    this._ignoreNext();
+
+    if (tty.windows[i]) return tty.windows[i].highlight();
+
+    if (offset > 0) {
       if (tty.windows[0]) return tty.windows[0].highlight();
-
-      return this.window.highlight();
+    } else {
+      i = tty.windows.length - 1;
+      if (tty.windows[i]) return tty.windows[i].highlight();
     }
 
-    // URXVT Keys for tab navigation and creation.
-    // Shift-Left, Shift-Right, Shift-Down
-    if (key === '\x1b[1;2D') {
-      this._ignoreNext();
-      return this.window.previousTab();
-    } else if (key === '\x1b[1;2B') {
-      this._ignoreNext();
-      return this.window.nextTab();
-    } else if (key === '\x1b[1;2C') {
-      this._ignoreNext();
-      return this.window.createTab();
-    }
+    return this.window.highlight();
+  });
 
-    if (key === Terminal.escapeKey) {
-      this._ignoreNext();
-      return setTimeout(function() {
-        this.keyDown({ keyCode: 27 });
-      }.bind(this), 1);
+  this.on('request paste', function(key) {
+    this.socket.emit('request paste', function(err, text) {
+      if (err) return;
+      self.send(text);
+    });
+  });
+
+  this.on('request create', function() {
+    this.window.createTab();
+  });
+
+  this.on('request term', function(key) {
+    if (this.window.tabs[key]) {
+      this.window.tabs[key].focus();
     }
   });
-};
 
-//var keyDown = Tab.prototype.keyDown;
-//Tab.prototype.keyDown = function(ev) {
-//  if (!Terminal.escapeKey) {
-//    return keyDown.apply(this, arguments);
-//  }
-//  if (ev.keyCode === Terminal.escapeKey) {
-//    return keyDown.call(this, { keyCode: 27 });
-//  }
-//  return keyDown.apply(this, arguments);
-//};
+  this.on('request term next', function(key) {
+    this.window.nextTab();
+  });
 
-// tmux/screen-like keys
-Tab.prototype.specialKeyHandler = function(key) {
-  var win = this.window;
-
-  switch (key) {
-    case '\x01': // ^A
-      this.send(key);
-      break;
-    case 'c':
-      win.createTab();
-      break;
-    case 'k':
-      win.focused.destroy();
-      break;
-    case 'w': // tmux
-    case '"': // screen
-      break;
-    default:
-      if (key >= '0' && key <= '9') {
-        key = +key;
-        // 1-indexed
-        key--;
-        if (!~key) key = 9;
-        if (win.tabs[key]) {
-          win.tabs[key].focus();
-        }
-      }
-      break;
-  }
+  this.on('request term previous', function(key) {
+    this.window.previousTab();
+  });
 };
 
 Tab.prototype._ignoreNext = function() {

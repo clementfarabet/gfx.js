@@ -1,15 +1,29 @@
 var tty = require('./');
+var fs = require('fs');
 
-var app = tty.createServer({
-    shell: 'bash',
-    port: 8000,
-    static: process.env.HOME + '/.gfx.js/static',
-    // syncSession: true,
-    // sessionTimeout: 3600*24*1000,
-    // users: {
-    //     u:"p"
-    // }
-});
+var config;
+// check for $HOME/.gfx.js/config.json
+var configFile = process.env.HOME + '/.gfx.js/config.json'
+console.log('Checking for custom config at ' + configFile)
+if (fs.existsSync(configFile)) {
+    config  = JSON.parse(fs.readFileSync(configFile, 'utf8'));
+    console.log('Custom config found')
+} else {
+    console.log('Custom config not found, using defaults');
+    // Default config
+    config = {
+	shell: 'bash',
+	port: 8000,
+	static: process.env.HOME + '/.gfx.js/static',
+	"https": {
+	    "key": process.env.HOME + "/.gfx.js/defaultcert/ca.key",
+	    "cert": process.env.HOME + "/.gfx.js/defaultcert/ca.crt"
+    }
+    }
+}
+
+console.log(config);
+var app = tty.createServer(config);
 
 app.get('/foo', function(req, res, next) {
   res.send('bar');
