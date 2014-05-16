@@ -15,6 +15,8 @@ js.static = os.getenv('HOME') .. '/.gfx.js/static/data/'
 js.template = os.getenv('HOME') .. '/.gfx.js/templates/'
 js.prefix = '/data/'
 
+js.verbose = true
+
 os.execute('mkdir -p "' .. js.static .. '"')
 
 js.templates = {}
@@ -30,7 +32,9 @@ for file in paths.files(js.template) do
 end
 
 local function log(id)
-   print('[gfx.js] rendering cell <' .. id .. '>')
+   if js.verbose then
+      print('[gfx.js] rendering cell <' .. id .. '>')
+   end
 end
 
 local function uid()
