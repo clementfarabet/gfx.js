@@ -1,19 +1,16 @@
-from PIL import Image
 import os.path
-import uuid
-import matplotlib.pyplot as plt
 
 js = {}
 
 js['static'] = os.path.join(os.path.expanduser('~'),'.gfx.js/static/data/')
 js['template'] = os.path.join(os.path.expanduser('~'),'.gfx.js/templates/')
-js['last'] = None
 
 if not os.path.exists(js['static']):
     os.makedirs(js['static'])
 
 js['templates'] = {}
 
+# Read templates from their saved location
 for file in os.listdir(js['template']):
     if file.endswith('.html'):
         f = open(os.path.join(js['template'],file),'rb')
@@ -23,39 +20,35 @@ for file in os.listdir(js['template']):
 def log(id):
     print '[gfx.js] rendering cell <%s>'%id
 
-def uid():
-    return 'dom_' + str(uuid.uuid4())
+def getDOMName(filename):
+    ''' Converts a filename into a unique dom name. '''
+    import hashlib
+    return 'dom_' + hashlib.md5(filename).hexdigest() + '.png'
 
-def getfname():
-    win = uid()
-    filename = win + '.png'
-    js['last'] = os.path.join(js['static'],filename)
-    return js['last']
-
-def render(filepath=None, zoom=1, width=500, refresh=False, legend=''):
-    if filepath is None:
-        filepath = js['last']
+def render(filepath, width='', refresh=False, legend=''):
+    ''' 
+        Render an image in the browser.
+        filepath: path to that image
+        width: width to render the image
+        refresh: refresh image code
+        legend: name the image
+    '''
 
     # Ex. filepath = /user/pictures/giraffe.png
     image_path_no_extension = os.path.splitext(filepath)[0] # Eg. /user/pictures/giraffe
     image_file = os.path.basename(filepath) # Eg. giraffe.png
     image_dir = os.path.dirname(filepath) # Eg. /user/pictures
 
-    if not image_file.startswith('dom_'):
-        # import shutil
-        # shutil.copyfile(filepath, os.path.join(image_dir,'dom_'+image_file))
-        try:
-            os.link(filepath, os.path.join(image_dir,'dom_'+image_file))
-        except OSError:
-            pass
-        image_file = 'dom_' + image_file
-        image_path_no_extension = os.path.splitext(os.path.join(image_dir,image_file))[0]
-
-    width *= zoom
+    dom_file = getDOMName(image_file) # giraffe.png ==> dom_random-string.png
+    try: # Hardlink the image to the dom_file
+        os.link(filepath, os.path.join(image_dir,dom_file))
+    except OSError:
+        pass
+    image_path_no_extension = os.path.splitext(os.path.join(image_dir,dom_file))[0]
 
     html = js['templates']['image']
     html = html.replace('${width}',str(width))
-    html = html.replace('${filename}',image_file)
+    html = html.replace('${filename}',dom_file)
     html = html.replace('${id}',image_path_no_extension)
     html = html.replace('${legend}',legend)
     html = html.replace('${refresh}', str(refresh))
@@ -67,9 +60,12 @@ def render(filepath=None, zoom=1, width=500, refresh=False, legend=''):
     log(image_path_no_extension)
     return image_path_no_extension
 
-
-def create_config(static_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static'),
+def create_config(static_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static/data'),
                   shell='bash', port=8000):
+    ''' 
+        Create the config file for Node JS to read. The most important part is
+        is to specify the directory to monitor for new images.
+    '''
     jdict = {
         'shell':shell,
         'port':port,
@@ -84,8 +80,9 @@ def create_config(static_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/stati
     with open(outname,'w') as outfile:
         json.dump(jdict, outfile)
 
-def startserver(monitor_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static'),
+def startserver(monitor_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static/data'),
                 port=8000):
+    ''' Starts the gfx server on the specified port monitoring the specified directory '''
     import urllib2
     
     status = None
@@ -107,6 +104,7 @@ def startserver(monitor_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static
         print '[gfx.js] server already running on port ' + str(port) + ', graphics will be rendered into https://localhost:' + str(port)
 
 def killserver(port=8000):
+    ''' Kill the server running at the specified port. '''
     import subprocess
 
     ps = subprocess.Popen('ps -ef | grep -v grep | grep \"server.js --port '+str(port) + '\"', shell=True, stdout=subprocess.PIPE)
@@ -122,6 +120,7 @@ def killserver(port=8000):
         print '[gfx.js] server stopped on port ' + str(port)
 
 def show(port=8000):
+    ''' Load the webpage associated with the server. '''
     import sys, time
     platform = sys.platform
     if 'linux' in platform:
