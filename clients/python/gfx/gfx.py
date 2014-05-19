@@ -99,7 +99,7 @@ def startserver(monitor_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static
         log = os.path.join(os.path.expanduser('~'),'.gfx.js/server.log')
         cmd = 'node ' + server + ' --port ' + str(port) + ' > ' + log + ' &'
         os.system(cmd)
-        print '[gfx.js] server started on port %s, monitoring directory %s Graphics will be rendered into https://localhost:%s'%(str(port),monitor_dir,str(port))
+        print '[gfx.js] server started on port %s, monitoring directory \'%s\' Graphics will be rendered into https://localhost:%s'%(str(port),monitor_dir,str(port))
     else:
         print '[gfx.js] server already running on port ' + str(port) + ', graphics will be rendered into https://localhost:' + str(port)
 
