@@ -24,7 +24,7 @@ fi
 cd -
 
 echo "==> Python client installed, run me like this:"
-echo "$ python -c 'import gfx; gfx.startserver(); gfx.show();'"
-echo "$ python -c 'import gfx; gfx.killserver();'"
+echo "$ gfx-start: Start and show the server"
+echo "$ gfx-stop: Stop the server"
 
 
