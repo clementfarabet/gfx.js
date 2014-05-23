@@ -14,6 +14,7 @@ if (fs.existsSync(configFile)) {
     config = {
 	shell: 'bash',
 	port: 8000,
+       usePollng: false,
 	static: process.env.HOME + '/.gfx.js/static/data',
 	"https": {
 	    "key": process.env.HOME + "/.gfx.js/defaultcert/ca.key",

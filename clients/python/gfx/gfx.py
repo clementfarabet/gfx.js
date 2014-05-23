@@ -61,14 +61,16 @@ def render(filepath, width='', refresh=False, legend=''):
     return image_path_no_extension
 
 def create_config(static_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static/data'),
-                  shell='bash', port=8000):
+                  remote=True, shell='bash', port=8000):
     ''' 
         Create the config file for Node JS to read. The most important part is
-        is to specify the directory to monitor for new images.
+        is to specify the directory to monitor for new images and whether this
+        directory is remote or on the local filesystem.
     '''
     jdict = {
         'shell':shell,
         'port':port,
+        'usePolling':remote,
         'static':static_dir,
         'https': {
             'key': os.path.join(os.path.expanduser('~'),'.gfx.js/defaultcert/ca.key'),
