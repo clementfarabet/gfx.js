@@ -3,12 +3,10 @@ import gfx
 import argparse
 
 parser = argparse.ArgumentParser(description='Start gfx server.')
-parser.add_argument('dir', metavar='dir', type=str, nargs='?', default='.',
-                    help='Directory to monitor for new images.')
 parser.add_argument('port', metavar='port', type=int, nargs='?', default=8000,
                     help='Port to run sever at.')
 args = parser.parse_args()
 
-gfx.startserver(args.dir, args.port)
-gfx.show(args.port)
+gfx.startserver(args.port)
+
 

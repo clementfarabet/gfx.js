@@ -1,4 +1,7 @@
 import os.path
+import hashlib
+import shutil
+import uuid
 
 js = {}
 
@@ -20,9 +23,12 @@ for file in os.listdir(js['template']):
 def log(id):
     print '[gfx.js] rendering cell <%s>'%id
 
+def uid():
+    ''' Generate a unique dom uuid. '''
+    return 'dom_' + str(uuid.uuid4())
+
 def getDOMName(filename):
     ''' Converts a filename into a unique dom name. '''
-    import hashlib
     return 'dom_' + hashlib.md5(filename).hexdigest() + '.png'
 
 def render(filepath, width='', refresh=False, legend=''):
@@ -40,11 +46,11 @@ def render(filepath, width='', refresh=False, legend=''):
     image_dir = os.path.dirname(filepath) # Eg. /user/pictures
 
     dom_file = getDOMName(image_file) # giraffe.png ==> dom_random-string.png
-    try: # Hardlink the image to the dom_file
-        os.link(filepath, os.path.join(image_dir,dom_file))
-    except OSError:
-        pass
-    image_path_no_extension = os.path.splitext(os.path.join(image_dir,dom_file))[0]
+
+    target = os.path.join(js['static'],dom_file)
+    shutil.copy(filepath, target)
+
+    image_path_no_extension = os.path.splitext(target)[0]
 
     html = js['templates']['image']
     html = html.replace('${width}',str(width))
@@ -60,31 +66,8 @@ def render(filepath, width='', refresh=False, legend=''):
     log(image_path_no_extension)
     return image_path_no_extension
 
-def create_config(static_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static/data'),
-                  remote=True, shell='bash', port=8000):
-    ''' 
-        Create the config file for Node JS to read. The most important part is
-        is to specify the directory to monitor for new images and whether this
-        directory is remote or on the local filesystem.
-    '''
-    jdict = {
-        'shell':shell,
-        'port':port,
-        'usePolling':remote,
-        'static':static_dir,
-        'https': {
-            'key': os.path.join(os.path.expanduser('~'),'.gfx.js/defaultcert/ca.key'),
-            'cert': os.path.join(os.path.expanduser('~'),'.gfx.js/defaultcert/ca.crt')
-            }
-        }
-    outname = os.path.join(os.path.expanduser('~'),'.gfx.js/config.json')
-    import json
-    with open(outname,'w') as outfile:
-        json.dump(jdict, outfile)
-
-def startserver(monitor_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static/data'),
-                port=8000):
-    ''' Starts the gfx server on the specified port monitoring the specified directory '''
+def startserver(port=8000):
+    ''' Starts the gfx server on the specified port. '''
     import urllib2
     
     status = None
@@ -94,14 +77,12 @@ def startserver(monitor_dir=os.path.join(os.path.expanduser('~'),'.gfx.js/static
         pass
     
     if status is None:
-        # Create server configuration file
-        create_config(monitor_dir)
         # Start the server
         server = os.path.join(os.path.expanduser('~'),'.gfx.js/server.js')
         log = os.path.join(os.path.expanduser('~'),'.gfx.js/server.log')
         cmd = 'node ' + server + ' --port ' + str(port) + ' > ' + log + ' &'
         os.system(cmd)
-        print '[gfx.js] server started on port %s, monitoring directory \'%s\' Graphics will be rendered into https://localhost:%s'%(str(port),monitor_dir,str(port))
+        print '[gfx.js] server started on port %s, graphics will be rendered into https://localhost:%s'%(str(port),str(port))
     else:
         print '[gfx.js] server already running on port ' + str(port) + ', graphics will be rendered into https://localhost:' + str(port)
 
