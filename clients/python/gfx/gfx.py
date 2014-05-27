@@ -7,6 +7,7 @@ js = {}
 
 js['static'] = os.path.join(os.path.expanduser('~'),'.gfx.js/static/data/')
 js['template'] = os.path.join(os.path.expanduser('~'),'.gfx.js/templates/')
+js['prefix'] = 'data'
 
 if not os.path.exists(js['static']):
     os.makedirs(js['static'])
@@ -54,8 +55,8 @@ def render(filepath, width='', refresh=False, legend=''):
 
     html = js['templates']['image']
     html = html.replace('${width}',str(width))
-    html = html.replace('${filename}',dom_file)
-    html = html.replace('${id}',image_path_no_extension)
+    html = html.replace('${filename}',os.path.join(js['prefix'],dom_file))
+    html = html.replace('${id}',os.path.splitext(dom_file)[0])
     html = html.replace('${legend}',legend)
     html = html.replace('${refresh}', str(refresh))
 
