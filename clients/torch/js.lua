@@ -69,8 +69,11 @@ function js.image(img, opts)
    end
 
    -- force image into RGB:
-   if img:nDimension() == 2 or (img:nDimension() == 3 and img:size(1) == 1) then
+   if img:nDimension() == 2 then
       img = img:reshape(1,img:size(1),img:size(2))
+   end
+
+   if img:size(1) == 1 then
       img = img:expand(3,img:size(2),img:size(3))
    end
 
