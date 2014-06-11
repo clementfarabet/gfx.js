@@ -1,0 +1,12 @@
+#!/usr/bin/env python
+import gfx
+import argparse
+
+parser = argparse.ArgumentParser(description='Start gfx server.')
+parser.add_argument('port', metavar='port', type=int, nargs='?', default=8000,
+                    help='Port to run sever at.')
+args = parser.parse_args()
+
+gfx.startserver(args.port)
+
+
