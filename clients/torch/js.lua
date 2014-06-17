@@ -134,9 +134,13 @@ function js.images(images, opts)
    local templates = {}
    local maxwidth,maxheight = 0,0
    for i,img in ipairs(images) do
+      -- min/max
+      local min = opts.min or img:min()
+      local max = opts.max or img:max()
+
       -- rescale image:
       img = torch.FloatTensor(img:size()):copy(img)
-      img:add(-img:min()):mul(1/img:max())
+      img:add(-min):mul(1/max)
 
       -- dump image:
       local uid = uid()
