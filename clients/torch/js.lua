@@ -387,6 +387,14 @@ function js.chart(data, opts)
    return win
 end
 
+function js.clear()
+   local files = dir.getfiles(js.static)
+   print('[gfx.js] clearing all cached graphics')
+   for _,file in ipairs(files) do
+      os.remove(file)
+   end
+end
+
 function js.redraw(id)
    -- id: if number then it means redraw last N elements
    -- if string, then it's an actual id
