@@ -174,3 +174,9 @@ print(ids[1])
 gfx.redraw(ids[1]) -- will redraw this resource
 gfx.redraw(10) -- will redraw the last 10 resources available (sorted by descending time)
 ```
+
+Finally, the server gets slower as the number of resources/charts/images grows in the 
+watched directory. It's useful to sometimes clear this cache manually:
+```
+gfx.clear()
+```
