@@ -20,6 +20,8 @@ nv.addGraph(function() {
 
     chart.xAxis.tickFormat(d3.format("${xFormat}"))
     chart.yAxis.tickFormat(d3.format("${yFormat}"))
+    chart.xAxis.axisLabel("${xLabel}")
+    chart.yAxis.axisLabel("${yLabel}")
 
     d3.select('#${id} svg')
         .datum(${data})
