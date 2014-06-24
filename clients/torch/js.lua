@@ -337,6 +337,8 @@ function js.chart(data, opts)
    local chart = opts.chart or 'line'
    local xFormat = opts.xFormat or '.02e'
    local yFormat = opts.yFormat or '.02e'
+   local xLabel = opts.xLabel or ''
+   local yLabel = opts.yLabel or ''
 
    -- chart
    chart = charts[chart]
@@ -377,6 +379,8 @@ function js.chart(data, opts)
       button = button,
       xFormat = xFormat,
       yFormat = yFormat,
+      xLabel = xLabel,
+      yLabel = yLabel,
    }
    local f = io.open(js.static..win..'.html','w')
    f:write(html)
