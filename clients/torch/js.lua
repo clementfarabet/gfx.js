@@ -282,6 +282,7 @@ local function format(data, chart)
    else
       -- Example dataset:
       local values1,values2,rand = {},{}
+      local N
       if chart == 'scatterChart' then
          N = 200
          rand = torch.FloatTensor(2,N)
