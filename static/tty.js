@@ -256,7 +256,7 @@ function Pane() {
   button.className = 'tab';
   
   button2 = document.createElement('div');
-  button2.innerHTML = '~';
+  button2.innerHTML = '+';
   button2.title = 'new';
   button2.className = 'tab';
 
@@ -555,7 +555,7 @@ function Window(socket) {
   button.className = 'tab';
 
   button2 = document.createElement('div');
-  button2.innerHTML = '~';
+  button2.innerHTML = '+';
   button2.title = 'new';
   button2.className = 'tab';
 
