@@ -75,8 +75,8 @@ body {
   top: 0;
   left: 0;
   right: 0;
-  height: 13px;
-  padding: 1px 0;
+  height: 15px;
+  padding: 1px;
   font-family: "DejaVu Sans Mono", "Liberation Mono", "Menlo", "Monaco", monospace;
   color: #fafafa;
 }
