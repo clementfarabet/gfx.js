@@ -238,6 +238,7 @@ function Pane() {
     , grip
     , bar
     , button
+    , button2
     , title;
 
   el = document.createElement('div');
@@ -250,9 +251,14 @@ function Pane() {
   bar.className = 'bar';
 
   button = document.createElement('div');
-  button.innerHTML = '~';
-  button.title = 'new/close';
+  button.innerHTML = 'x';
+  button.title = 'close';
   button.className = 'tab';
+  
+  button2 = document.createElement('div');
+  button2.innerHTML = '~';
+  button2.title = 'new';
+  button2.className = 'tab';
 
   title = document.createElement('div');
   title.className = 'title';
@@ -262,6 +268,7 @@ function Pane() {
   this.grip = grip;
   this.bar = bar;
   this.button = button;
+  this.button2 = button2;
   this.title = title;
 
   this.tabs = [];
@@ -273,6 +280,7 @@ function Pane() {
   el.appendChild(grip);
   el.appendChild(bar);
   bar.appendChild(button);
+  // bar.appendChild(button2);
   bar.appendChild(title);
   body.appendChild(el);
 
@@ -290,14 +298,16 @@ Pane.prototype.bind = function() {
     , bar = this.bar
     , grip = this.grip
     , button = this.button
+    , button2 = this.button2
     , last = 0;
 
   on(button, 'click', function(ev) {
-    if (ev.ctrlKey || ev.altKey || ev.metaKey || ev.shiftKey) {
-      self.destroy();
-    } else {
-      self.createTab();
-    }
+    self.destroy();
+    return cancel(ev);
+  });
+  
+  on(button2, 'click', function(ev) {
+    self.createTab();
     return cancel(ev);
   });
 
@@ -527,6 +537,7 @@ function Window(socket) {
     , grip
     , bar
     , button
+    , button2
     , title;
 
   el = document.createElement('div');
@@ -537,11 +548,16 @@ function Window(socket) {
 
   bar = document.createElement('div');
   bar.className = 'bar';
-
+  
   button = document.createElement('div');
-  button.innerHTML = '~';
-  button.title = 'new/close';
+  button.innerHTML = 'x';
+  button.title = 'close';
   button.className = 'tab';
+
+  button2 = document.createElement('div');
+  button2.innerHTML = '~';
+  button2.title = 'new';
+  button2.className = 'tab';
 
   title = document.createElement('div');
   title.className = 'title';
@@ -552,6 +568,7 @@ function Window(socket) {
   this.grip = grip;
   this.bar = bar;
   this.button = button;
+  this.button2 = button2;
   this.title = title;
 
   this.tabs = [];
@@ -563,6 +580,7 @@ function Window(socket) {
   el.appendChild(grip);
   el.appendChild(bar);
   bar.appendChild(button);
+  bar.appendChild(button2);
   bar.appendChild(title);
   body.appendChild(el);
 
@@ -586,14 +604,16 @@ Window.prototype.bind = function() {
     , bar = this.bar
     , grip = this.grip
     , button = this.button
+    , button2 = this.button2
     , last = 0;
 
   on(button, 'click', function(ev) {
-    if (ev.ctrlKey || ev.altKey || ev.metaKey || ev.shiftKey) {
-      self.destroy();
-    } else {
-      self.createTab();
-    }
+    self.destroy();
+    return cancel(ev);
+  });
+  
+  on(button2, 'click', function(ev) {
+    self.createTab();
     return cancel(ev);
   });
 

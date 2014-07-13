@@ -48,7 +48,7 @@ body {
 
 .window {
   padding-top: 15px;
-  border: #fafafa solid 1px;
+  border: #555 solid 1px;
   background: #272829;
   position: absolute;
   top: 20px;
@@ -94,7 +94,8 @@ body {
 }
 
 .tab {
-  font-size: 16px;
+  font-family: "DejaVu Sans Mono", "Liberation Mono", "Menlo", monospace;
+  font-size: 14px;
   margin-left: 8px;
   margin-top: -2px;
   float: left;
