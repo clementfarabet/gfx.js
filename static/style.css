@@ -183,15 +183,14 @@ h1 {
 
 #help {
   font: 12px/1.5 sans-serif;
-  color: #999;
+  color: #666;
   position: fixed;
   bottom: 10px;
   left: 10px;
 }
 
 #help a {
-  /* text-decoration: none; */
-  color: #999;
+  color: #666;
 }
 
 .dark h1, .dark #help { }
