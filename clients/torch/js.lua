@@ -63,8 +63,6 @@ function js.image(img, opts)
    img = torch.FloatTensor(img:size()):copy(img)
    img:add(-min):mul(1/(max-min))
 
-   print(img:min(), img:max())
-
    -- img is a collection?
    if img:nDimension() == 4 or (img:nDimension() == 3 and img:size(1) > 3) then
       local images = {}
