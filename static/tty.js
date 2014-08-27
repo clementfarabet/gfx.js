@@ -862,7 +862,7 @@ Window.prototype.highlight = function() {
   this.element.style.borderColor = 'orange';
   setTimeout(function() {
     self.element.style.borderColor = '';
-  }, 200);
+  }, 2000);
 
   this.focus();
 };
@@ -1243,7 +1243,7 @@ function load() {
 
 on(document, 'load', load);
 on(document, 'DOMContentLoaded', load);
-setTimeout(load, 200);
+setTimeout(load, 2000);
 
 /**
  * Expose
