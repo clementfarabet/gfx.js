@@ -54,10 +54,14 @@ function js.image(img, opts)
       win = js.images(img, opts)
       return win
    end
+      
+   -- min/max
+   local min = opts.min or img:min()
+   local max = opts.max or img:max()
 
    -- rescale image:
    img = torch.FloatTensor(img:size()):copy(img)
-   img:add(-img:min()):mul(1/img:max())
+   img:add(-min):mul(1/(max-min))
 
    -- img is a collection?
    if img:nDimension() == 4 or (img:nDimension() == 3 and img:size(1) > 3) then
@@ -140,7 +144,7 @@ function js.images(images, opts)
 
       -- rescale image:
       img = torch.FloatTensor(img:size()):copy(img)
-      img:add(-min):mul(1/max)
+      img:add(-min):mul(1/(max-min))
 
       -- dump image:
       local uid = uid()
