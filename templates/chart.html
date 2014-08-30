@@ -2,6 +2,7 @@
     <svg style="height:${height}px; width:${width}px; background:${background};"></svg>
     <div style="background:${background}">
         <span style="${button}">SVG</span>
+        <span style="${button}">PNG</span>
     </div>
 </div>
 
@@ -56,5 +57,10 @@ buttons[0].onclick = function() {
     };
 
     a.click();
+};
+
+buttons[1].onclick = function() {
+    var svg = document.getElementById('${id}').children[0];
+    saveSvgAsPng(svg, "diagram.png", 1);
 }; 
 </script>
