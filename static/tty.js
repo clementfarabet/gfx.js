@@ -413,7 +413,6 @@ Pane.prototype.resizing = function(ev) {
     , term = this.focused;
 
   if (this.minimize) delete this.minimize;
-
   var resize = {
     w: el.clientWidth,
     h: el.clientHeight
@@ -423,36 +422,37 @@ Pane.prototype.resizing = function(ev) {
   el.style.opacity = '0.70';
   el.style.cursor = 'se-resize';
   root.style.cursor = 'se-resize';
-  // term.element.style.height = '100%';
 
   function move(ev) {
     var x, y;
-    y = el.offsetHeight; // - term.element.clientHeight;
-    x = ev.pageX - el.offsetLeft;
-    y = (ev.pageY - el.offsetTop) - y;
+    x = (ev.pageX - el.offsetLeft);
+    y = (ev.pageY - el.offsetTop); // - el.offsetHeight;
     el.style.width = x + 'px';
     el.style.height = y + 'px';
   }
 
   function up() {
     var x, y;
-
-    x = el.clientWidth / resize.w;
-    y = el.clientHeight / resize.h;
-    x = 0; //(x * term.cols) | 0;
-    y = 0; //(y * term.rows) | 0;
+    x = (ev.pageX - el.offsetLeft) + 'px';
+    y = (ev.pageY - el.offsetTop) + 'px';
 
     self.resize(x, y);
 
-    el.style.width = '';
-    el.style.height = '';
+    var elch = el.children[2].getElementsByTagName("img");
+    for (i=0; i < elch.length; i++) {
+	if (elch[i].style.width != null) {
+    	    elch[i].style.width = '100%';
+    	    elch[i].style.height = '100%';
+	}
+    }
+
+    // el.style.width = '';
+    // el.style.height = '';
 
     el.style.overflow = '';
     el.style.opacity = '';
     el.style.cursor = '';
     root.style.cursor = '';
-    // term.element.style.height = '';
-
     off(document, 'mousemove', move);
     off(document, 'mouseup', up);
   }
@@ -862,7 +862,7 @@ Window.prototype.highlight = function() {
   this.element.style.borderColor = 'orange';
   setTimeout(function() {
     self.element.style.borderColor = '';
-  }, 200);
+  }, 2000);
 
   this.focus();
 };
@@ -1243,7 +1243,7 @@ function load() {
 
 on(document, 'load', load);
 on(document, 'DOMContentLoaded', load);
-setTimeout(load, 200);
+setTimeout(load, 2000);
 
 /**
  * Expose

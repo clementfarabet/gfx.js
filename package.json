@@ -11,7 +11,7 @@
   "keywords": ["graphics", "browser"],
   "dependencies": {
     "express": "3.4.4",
-    "socket.io": "0.9.16",
+    "socket.io": "1.0",
     "pty.js": "0.2.4",
     "fsevents": "0.2.0",
     "recursive-readdir": "0.0.2"
