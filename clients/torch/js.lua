@@ -99,7 +99,7 @@ function js.image(img, opts)
    -- render template:
    local html = t.image % {
       width = width, 
-      filename = js.prefix .. filename,
+      filename = js.prefix .. filename .. '?' .. os.time(),
       id = win,
       legend = legend or '',
       refresh = tostring(refresh),
