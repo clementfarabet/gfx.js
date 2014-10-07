@@ -1,20 +1,22 @@
 {
-  "name": "gfx.js",
-  "description": "A graphics server for your browser",
-  "author": "tty.js: Christopher Jeffrey - gfx.js: Clement Farabet",
-  "version": "0.2.10",
-  "main": "./index.js",
-  "bin": "./bin/tty.js",
-  "man": "./man/tty.js.1",
-  "preferGlobal": false,
-  "repository": "git://github.com/clementfarabet/gfx.js.git",
-  "keywords": ["graphics", "browser"],
-  "dependencies": {
-    "express": "3.4.4",
-    "socket.io": "1.0",
-    "pty.js": "0.2.4",
-    "fsevents": "0.2.0",
-    "recursive-readdir": "0.0.2"
-  },
-  "engines": { "node": ">= 0.10.0" }
+    "name": "gfx.js",
+    "description": "A graphics server for your browser",
+    "author": "tty.js: Christopher Jeffrey - gfx.js: Clement Farabet",
+    "version": "0.2.10",
+    "main": "./index.js",
+    "bin": "./bin/tty.js",
+    "man": "./man/tty.js.1",
+    "preferGlobal": false,
+    "repository": "git://github.com/clementfarabet/gfx.js.git",
+    "keywords": ["graphics", "browser"],
+    "dependencies": {
+        "express": "3.4.4",
+        "socket.io": "1.1.0",
+        "pty.js": "0.2.4",
+        "recursive-readdir": "0.0.2"
+    },
+    "optionalDependencies" : {
+        "fsevents": "0.2.0"
+    },
+    "engines": { "node": ">= 0.10.0" }
 }
