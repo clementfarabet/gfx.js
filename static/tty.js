@@ -1243,7 +1243,7 @@ function load() {
 
 on(document, 'load', load);
 on(document, 'DOMContentLoaded', load);
-setTimeout(load, 2000);
+setTimeout(load, 5000);
 
 /**
  * Expose
